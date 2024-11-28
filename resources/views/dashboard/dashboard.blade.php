@@ -52,7 +52,7 @@
                         <!--end col-->
                     </div>
                     <!--end row-->
-                    <div class="row row-cols-xl-3 row-cols-md-1 row-cols-1 g-2">
+                    <div class="row row-cols-xl-3 row-cols-md-1 row-cols-1 g-2 mb-3">
                         <div class="col">
                             <h5 class="text-muted text-uppercase fs-13">Admin</h5>
                             <div class="row row row-cols-xxl-2 row-cols-md-2 row-cols-1 g-2">
@@ -274,6 +274,63 @@
                         </div><!-- end col -->
                     </div><!-- end row -->
 
+                    <div class="row">
+                        <div class="col-xxl-12">
+                            <div class="card">
+                                <div class="card-body p-0">
+                                    <div class="row g-0 mb-3">
+                                        <div class="col-xxl-12">
+                                            <div class="">
+                                                <div class="card-header border-0 align-items-center d-flex">
+                                                    <h4 class="card-title mb-0 flex-grow-1">Statistik</h4>
+                                                    <div>
+                                                        <button type="button" class="btn btn-soft-secondary btn-sm material-shadow-none">
+                                                            ALL
+                                                        </button>
+                                                        <button type="button" class="btn btn-soft-secondary btn-sm material-shadow-none">
+                                                            1M
+                                                        </button>
+                                                        <button type="button" class="btn btn-soft-secondary btn-sm material-shadow-none">
+                                                            6M
+                                                        </button>
+                                                        <button type="button" class="btn btn-soft-primary btn-sm material-shadow-none">
+                                                            1Y
+                                                        </button>
+                                                    </div>
+                                                </div><!-- end card header -->
+                                                <div class="row g-0 text-center">
+                                                    <div class="col-6 col-sm-4">
+                                                        <div class="p-3 border border-dashed border-start-0">
+                                                            <h5 class="mb-1"><span class="counter-value" data-target="1">0</span></h5>
+                                                            <p class="text-muted mb-0">Admin</p>
+                                                        </div>
+                                                    </div>
+                                                    <!--end col-->
+                                                    <div class="col-6 col-sm-4">
+                                                        <div class="p-3 border border-dashed border-start-0">
+                                                            <h5 class="mb-1"><span class="counter-value" data-target="3">0</span></h5>
+                                                            <p class="text-muted mb-0">User</p>
+                                                        </div>
+                                                    </div>
+                                                    <!--end col-->
+                                                    <div class="col-6 col-sm-4">
+                                                        <div class="p-3 border border-dashed border-end-0">
+                                                            <h5 class="mb-1"><span class="counter-value" data-target="4">0</span></h5>
+                                                            <p class="text-muted mb-0">Koperasi</p>
+                                                        </div>
+                                                    </div>
+                                                    <!--end col-->
+                                                </div>
+                                                <div id="line_chart_basic" data-colors='["--vz-primary","--vz-success", "--vz-light"]' data-colors-corporate='["--vz-primary","--vz-secondary", "--vz-light"]' data-colors-galaxy='["--vz-primary","--vz-success", "--vz-secondary"]' data-colors-classic='["--vz-primary","--vz-light", "--vz-secondary"]' class="apex-charts" dir="ltr"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end col-->
+                    </div><!--end row-->
+
                 </div>
                 <!-- container-fluid -->
             </div>
@@ -288,9 +345,17 @@
 
     @include("dashboard.partials.scripts-js")
 
+
     <!-- link js -->
-    <!-- CRM js -->
-    <script src="assets/js/pages/dashboard-crypto.init.js"></script>
+     <!-- apexcharts -->
+     <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
+
+     <!--Swiper slider js-->
+     <script src="assets/libs/swiper/swiper-bundle.min.js"></script>
+
+     <!-- Marketplace init -->
+     <script src="assets/js/pages/dashboard-nft.init.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const greetingElement = document.getElementById('greeting');

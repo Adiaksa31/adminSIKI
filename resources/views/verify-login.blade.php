@@ -69,6 +69,13 @@
         <!-- end row -->
 <script type="text/javascript" src="/../assets/libs/jquery/jquery-2.2.4.min.js"></script>
 <script>
+    $('#otp-input').on('input', function() {
+        const otp = $(this).val();
+
+        if (otp.length === 8) {
+            $('#verifyForm').submit();
+        }
+    });
     $('#verifyForm').on('submit', function (e) {
         e.preventDefault();
 

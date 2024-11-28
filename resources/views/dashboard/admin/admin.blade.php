@@ -37,40 +37,53 @@
                                     </div><!-- end card header -->
 
                                     <div class="card-body">
-
+                                        <div class="text-end mb-3">
+                                            <a href="{{ route('tambah-admin') }}" class="btn btn-primary fw-bold"><i class="ri-user-2-line"></i>  Tambah Admin</a>
+                                        </div>
                                         <div class="px-4 mx-n4">
                                             <div class="table-responsive">
                                                 <table id="table-anggota" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
-                                                    <thead>
-                                                        <tr>
-                                                            <th scope="col">#</th>
-                                                            <th scope="col">Nama Lengkap</th>
-                                                            <th scope="col">Email</th>
-                                                            <th scope="col">Nomor Telp</th>
-                                                            <th scope="col">Jabatan</th>
-                                                            <th scope="col">Divisi</th>
-                                                            <th scope="col">Aktif</th>
-                                                            <th scope="col">Aksi</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @php $i=1 @endphp
-                                                        <tr>
-                                                            <td>{{ $i++ }}</td>
-                                                            <td>John Doe</td>
-                                                            <td>dummy@example.com</td>
-                                                            <td>+62 81234567890</td>
-                                                            <td>SPV</td>
-                                                            <td>IT</td>
-                                                            <td><span class="badge bg-success">Aktif</span></td>
-                                                            <td>
-                                                                <div class="hstack gap-3 flex-wrap">
-                                                                    <a href="javascript:void(0);" class="link-success fs-15" title="detail"><i class="ri-eye-close-line"></i></a>
-                                                                    <a href="javascript:void(0);" class="link-danger fs-15"><i class="ri-delete-bin-line"></i></a>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
+
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col">#</th>
+                                                                <th scope="col">Nama Lengkap</th>
+                                                                <th scope="col">Email</th>
+                                                                <th scope="col">Nomor Telp</th>
+                                                                <th scope="col">Jabatan</th>
+                                                                <th scope="col">Divisi</th>
+                                                                {{-- <th scope="col">Aktif</th> --}}
+                                                                <th scope="col">Aksi</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @php $i = 1; @endphp
+                                                            @if(count($dataStaff) > 0)
+                                                                @foreach($dataStaff as $staff)
+                                                                    <tr>
+                                                                        <td>{{ $i++ }}</td>
+                                                                        <td>{{ $staff['fullname'] }}</td>
+                                                                        <td>{{ $staff['email'] }}</td>
+                                                                        <td>{{ $staff['phone'] }}</td>
+                                                                        <td>{{ $staff['role'] }}</td>
+                                                                        <td>{{ $staff['division']['division'] }}</td>
+                                                                        {{-- <td><span class="badge bg-success">Aktif</span></td> --}}
+                                                                        <td>
+                                                                            <div class="hstack gap-3 flex-wrap">
+                                                                                <a href="javascript:void(0);" class="link-success fs-15" title="detail"><i class="ri-eye-close-line"></i></a>
+                                                                                <a href="javascript:void(0);" class="link-danger fs-15"><i class="ri-delete-bin-line"></i></a>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            @else
+                                                                <tr>
+                                                                    <td colspan="7" class="text-center">Belum ada data</td>
+                                                                </tr>
+                                                            @endif
+
+                                                        </tbody>
+
                                                 </table>
 
                                             </div>
@@ -98,6 +111,15 @@
     @include("dashboard.partials.scripts-js")
 
      <!-- link js -->
+
+    <script type="text/javascript">
+        function initializeTables() {
+            new DataTable("#table-anggota");
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            initializeTables();
+        });
+    </script>
 
 </body>
 

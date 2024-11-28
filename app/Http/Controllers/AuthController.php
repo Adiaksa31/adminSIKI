@@ -28,14 +28,13 @@ class AuthController extends Controller
         // $requestData["ip_address"] = $ipAddress;
         // dd($requestData);
         try {
-            $data = ApiHelper::request("POST", "/login", [
+            $data = ApiHelper::request("POST", "/auth/login", [
                 "form_params" => $requestData,
             ]);
             // ApiHelper::setSession($data,$request->has('rememberme'));
             session()->put('verify_key', $data['data']['seed']);
-            session()->put('email', $data['data']['email']);
-            session()->put('paramId', $data['data']['id']);
-            $verify_key = session('verify_key');
+            session()->put('paramId', $data['data']['param']);
+            $verify_key = $data['data']['seed'];
             return response()->json([
                 'error' => false,
                 'message'   => [
@@ -66,7 +65,6 @@ class AuthController extends Controller
         if(!$request->ajax()){
             return redirect()->back();
         }
-        $username = Session::get('email');
         $seed = Session::get('verify_key');
         $paramId = Session::get('paramId');
         $keys = [
@@ -74,20 +72,22 @@ class AuthController extends Controller
         ];
         $requestData = RequestHelper::sanitize($request, $keys);
         $requestData["id"] = $paramId;
-        $requestData["username"] = $username;
         $requestData["seed"] = $seed;
 
         // dd($requestData);
         try {
-           $data = ApiHelper::request("POST", "/verify_otp", [
+           $data = ApiHelper::request("POST", "/auth/verify_otp", [
                 "form_params" => $requestData,
             ]);
             session()->put('seed', $data['data']['seed']);
             session()->put('username', $data['data']['user']['username']);
+            session()->put('role', $data['data']['user']['role']);
             session()->put('access', $data['data']['tokens']['access']);
             session()->put('access_until', $data['data']['tokens']['access_until']);
             session()->put('access_refresh', $data['data']['tokens']['refresh']);
             // dd(Session::get('access'));
+            session()->forget('verify_key');
+            // dd(session()->all());
             return response()->json([
                 'error' => false,
                 'message'   => [
@@ -117,13 +117,13 @@ class AuthController extends Controller
         if(!$request->ajax()){
             return redirect()->back();
         }
-        $username = Session::get('email');
+        $paramId = Session::get('paramId');
         $seed = Session::get('verify_key');
-        $requestData["username"] = $username;
         $requestData["seed"] = $seed;
+        $requestData["id"] = $paramId;
         // dd($requestData);
         try {
-            ApiHelper::request("POST", "/resend_otp", [
+            ApiHelper::request("POST", "/auth/resend_otp", [
                 "form_params" => $requestData,
             ]);
             return response()->json([
