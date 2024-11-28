@@ -16,7 +16,7 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request)
     {
-        if(!$request->ajax()){
+        if (!$request->ajax()) {
             return redirect()->back();
         }
         // $ipAddress = $request->getClientIp();
@@ -28,34 +28,33 @@ class AuthController extends Controller
         // $requestData["ip_address"] = $ipAddress;
         // dd($requestData);
         try {
-            $data = ApiHelper::request("POST", "/login", [
+            $data = ApiHelper::request("POST", "/auth/login", [
                 "form_params" => $requestData,
             ]);
             // ApiHelper::setSession($data,$request->has('rememberme'));
-            session()->put('verify_key', $data['data']['seed']);
-            session()->put('email', $data['data']['email']);
-            session()->put('paramId', $data['data']['id']);
-            $verify_key = session('verify_key');
+            $seedValue = $data['data']['seed'];
+            session()->put('paramId', $data['data']['param']);
+            $verify_key = $seedValue;
             return response()->json([
                 'error' => false,
-                'message'   => [
-                    'returned'	=> '<div class="alert alert-success alert-dismissible fade show" role="alert">Berhasil Masuk SIKI. Silakan cek email Anda.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+                'message' => [
+                    'returned' => '<div class="alert alert-success alert-dismissible fade show" role="alert">Berhasil Masuk SIKI. Silakan cek email Anda.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
                 ],
                 'redirect_url' => route('verify-login', ['verify_key' => $verify_key]),
             ]);
-        }catch(ClientException $e) {
+        } catch (ClientException $e) {
             $statusCode = $e->getResponse()->getStatusCode();
             // dd($e);
             $msg = "Gagal Masuk SIKI, Data tidak Valid.";
-            if ( $statusCode == 400 || $statusCode == 401 ) {
+            if ($statusCode == 400 || $statusCode == 401) {
                 $msg = "Email atau Password salah.";
-            }else if($statusCode == 403) {
+            } else if ($statusCode == 403) {
                 $msg = "Percobaan login melebihi batas ! Silahkan coba beberapa saat lagi.";
             }
             return response()->json([
-                'error'     => true,
-                'message'   => [
-                    'returned'	=> '<div class="alert alert-warning alert-dismissible fade show" role="alert">'.$msg.'<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+                'error' => true,
+                'message' => [
+                    'returned' => '<div class="alert alert-warning alert-dismissible fade show" role="alert">' . $msg . '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
                 ],
             ]);
         }
@@ -63,23 +62,22 @@ class AuthController extends Controller
 
     public function verify(VerifyRequest $request)
     {
-        if(!$request->ajax()){
+        if (!$request->ajax()) {
             return redirect()->back();
         }
-        $username = Session::get('email');
-        $seed = Session::get('verify_key');
+        $seed = $request->route('verify_key');
+        // dd($seed);
         $paramId = Session::get('paramId');
         $keys = [
             "otp",
         ];
         $requestData = RequestHelper::sanitize($request, $keys);
         $requestData["id"] = $paramId;
-        $requestData["username"] = $username;
-        $requestData["seed"] = $seed;
+        $requestData["seed"] = $request->input('seed');
 
         // dd($requestData);
         try {
-           $data = ApiHelper::request("POST", "/verify_otp", [
+            $data = ApiHelper::request("POST", "/auth/verify_otp", [
                 "form_params" => $requestData,
             ]);
             session()->put('seed', $data['data']['seed']);
@@ -90,61 +88,66 @@ class AuthController extends Controller
             // dd(Session::get('access'));
             return response()->json([
                 'error' => false,
-                'message'   => [
-                    'returned'	=> '<div class="alert alert-success alert-dismissible fade show" role="alert">Berhasil Masuk SIKI.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+                'message' => [
+                    'returned' => '<div class="alert alert-success alert-dismissible fade show" role="alert">Berhasil Masuk SIKI.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
                 ],
             ]);
-        }catch(ClientException $e) {
+        } catch (ClientException $e) {
             $statusCode = $e->getResponse()->getStatusCode();
-            // dd($e);
+            dd($e);
             $msg = "Gagal Masuk SIKI, Data tidak Valid.";
-            if ( $statusCode == 400 ) {
+            if ($statusCode == 400) {
                 $msg = "Kode OTP Salah.";
-            }else if($statusCode == 401) {
+            } else if ($statusCode == 401) {
                 $msg = "Kode OTP masa berlaku sudah habis.";
             }
             return response()->json([
-                'error'     => true,
-                'message'   => [
-                    'returned'	=> '<div class="alert alert-warning alert-dismissible fade show" role="alert">'.$msg.'<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+                'error' => true,
+                'status' => $statusCode,
+                'message' => [
+                    'returned' => '<div class="alert alert-warning alert-dismissible fade show" role="alert">' . $msg . '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
                 ],
             ]);
         }
     }
 
+    public function showVerifikasi(Request $request, $verify_key) {
+        // dd($verify_key);
+        return view('verify-login', compact('verify_key'));
+    }
+
     public function resendOtp(Request $request)
     {
-        if(!$request->ajax()){
+        if (!$request->ajax()) {
             return redirect()->back();
         }
-        $username = Session::get('email');
-        $seed = Session::get('verify_key');
-        $requestData["username"] = $username;
-        $requestData["seed"] = $seed;
-        // dd($requestData);
+        $paramId = Session::get('paramId');
+        $requestData["id"] = $paramId;
+        $requestData["seed"] = $request->input('seed');
         try {
-            ApiHelper::request("POST", "/resend_otp", [
+            ApiHelper::request("POST", "/auth/resend_otp", [
                 "form_params" => $requestData,
             ]);
             return response()->json([
                 'error' => false,
-                'message'   => [
-                    'returned'	=> '<div class="alert alert-success alert-dismissible fade show" role="alert">Silakan cek lagi email Anda.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+                'message' => [
+                    'returned' => '<div class="alert alert-success alert-dismissible fade show" role="alert">Silakan cek lagi email Anda.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
                 ],
             ]);
-        }catch(ClientException $e) {
+        } catch (ClientException $e) {
             $statusCode = $e->getResponse()->getStatusCode();
             // dd($e);
             $msg = "Gagal Mengirim Kode OTP, Data tidak Valid.";
-            if ( $statusCode == 400 ) {
+            if ($statusCode == 400) {
                 $msg = "Data tidak Valid.";
-            }else if($statusCode == 401) {
-                $msg = "Kode OTP masa berlaku sudah habis.";
+            } else if ($statusCode == 401) {
+                $msg = "Kode OTP masa berlaku sudah habis, silahkan login ulang.";
             }
             return response()->json([
-                'error'     => true,
-                'message'   => [
-                    'returned'	=> '<div class="alert alert-warning alert-dismissible fade show" role="alert">'.$msg.'<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+                'error' => true,
+                'status' => $statusCode,
+                'message' => [
+                    'returned' => '<div class="alert alert-warning alert-dismissible fade show" role="alert">' . $msg . '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
                 ],
             ]);
         }
