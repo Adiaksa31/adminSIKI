@@ -19,7 +19,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'check.useragent.ip' => CheckUserAgentAndIP::class,
             'guestApi' => AuthGuestMiddleware::class,
             "authApi" => AuthApiMiddleware::class,
-            'seed' => CheckVerify::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -14,7 +14,7 @@ Route::middleware(['check.useragent.ip'])->group(function () {
     Route::middleware(['guestApi'])->group(function (){
         Route::get('/', function () { return view('login'); })->name('login');
         Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
-        Route::get('/verify-{verify_key}', function () { return view('verify-login'); })->name('verify-login');
+        Route::get('/verify-{verify_key}', [AuthController::class, 'showVerifikasi'])->name('verify-login');
         Route::post('/verify/submit', [AuthController::class, 'verify'])->name('verify.submit');
         Route::post('/verify/resend-otp', [AuthController::class, 'resendOtp'])->name('resendOtp');
     });

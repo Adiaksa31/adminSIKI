@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
 {
@@ -15,3 +17,4 @@ class DashboardController extends Controller
         return view('dashboard.dashboard');
     }
 }
+

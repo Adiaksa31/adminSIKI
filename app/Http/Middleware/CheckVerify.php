@@ -17,7 +17,7 @@ class CheckVerify
     public function handle(Request $request, Closure $next): Response
     {
         $verify_key = $request->route('verify_key');
-        $sessionVerify_key = Session::get('verify_key');
+        $sessionVerify_key = $request->cookie('verify_key');
 
         // dd($seed, $sessionSeed);
         if ($verify_key !== $sessionVerify_key) {
