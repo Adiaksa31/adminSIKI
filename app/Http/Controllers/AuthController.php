@@ -45,12 +45,13 @@ class AuthController extends Controller
         } catch (ClientException $e) {
             $statusCode = $e->getResponse()->getStatusCode();
             // dd($e);
-            $msg = "Gagal Masuk SIKI, Data tidak Valid.";
-            if ($statusCode == 400 || $statusCode == 401) {
-                $msg = "Email atau Password salah.";
-            } else if ($statusCode == 403) {
-                $msg = "Percobaan login melebihi batas ! Silahkan coba beberapa saat lagi.";
-            }
+            $msgs = [
+                400 => "Email atau Password salah.",
+                401 => "Email atau Password salah.",
+                403 => "Percobaan login melebihi batas ! Silahkan coba beberapa saat lagi.",
+            ];
+
+            $msg = $msgs[$statusCode] ?? "Gagal Mengirim Data.";
             return response()->json([
                 'error' => true,
                 'message' => [
@@ -78,12 +79,11 @@ class AuthController extends Controller
             $data = ApiHelper::request("POST", "/auth/verify_otp", [
                 "form_params" => $requestData,
             ]);
+            // dd($data);
             session()->put('seed', $data['data']['seed']);
             session()->put('username', $data['data']['user']['username']);
             session()->put('role', $data['data']['user']['role']);
-            session()->put('access', $data['data']['tokens']['access']);
-            session()->put('access_until', $data['data']['tokens']['access_until']);
-            session()->put('access_refresh', $data['data']['tokens']['refresh']);
+            session()->put('access', $data['data']['access']);
 
             return response()->json([
                 'error' => false,
@@ -93,13 +93,12 @@ class AuthController extends Controller
             ]);
         } catch (ClientException $e) {
             $statusCode = $e->getResponse()->getStatusCode();
-            dd($e);
-            $msg = "Gagal Masuk SIKI, Data tidak Valid.";
-            if ($statusCode == 400) {
-                $msg = "Kode OTP Salah.";
-            } else if ($statusCode == 401) {
-                $msg = "Kode OTP masa berlaku sudah habis.";
-            }
+            // dd($e);
+            $msgs = [
+                400 => "Kode OTP Salah.",
+                401 => "Kode OTP masa berlaku sudah habis, silahkan login ulang.",
+            ];
+            $msg = $msgs[$statusCode] ?? "Gagal Mengirim Kode OTP, Data tidak Valid.";
             return response()->json([
                 'error' => true,
                 'status' => $statusCode,
@@ -111,7 +110,6 @@ class AuthController extends Controller
     }
 
     public function showVerifikasi(Request $request, $verify_key) {
-        // dd($verify_key);
         return view('verify-login', compact('verify_key'));
     }
 
@@ -136,12 +134,11 @@ class AuthController extends Controller
         } catch (ClientException $e) {
             $statusCode = $e->getResponse()->getStatusCode();
             // dd($e);
-            $msg = "Gagal Mengirim Kode OTP, Data tidak Valid.";
-            if ($statusCode == 400) {
-                $msg = "Data tidak Valid.";
-            } else if ($statusCode == 401) {
-                $msg = "Kode OTP masa berlaku sudah habis, silahkan login ulang.";
-            }
+            $msgs = [
+                400 => "Data tidak Valid.",
+                401 => "Kode OTP masa berlaku sudah habis, silahkan login ulang.",
+            ];
+            $msg = $msgs[$statusCode] ?? "Gagal Mengirim Kode OTP, Data tidak Valid.";
             return response()->json([
                 'error' => true,
                 'status' => $statusCode,
@@ -154,9 +151,7 @@ class AuthController extends Controller
 
     public function logout()
     {
-        // Hapus semua data sesi
         session()->flush();
-        // Mengarahkan pengguna kembali ke halaman login
         return response()->json([
             'error' => false,
             'message' => [

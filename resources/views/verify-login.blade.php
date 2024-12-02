@@ -7,7 +7,7 @@
                 <div class="text-center mt-sm-5 mb-4 text-white-50">
                     <div>
                         <a href="" class="d-inline-block auth-logo">
-                            <img src="/../assets/images/{{ env('APP_LOGO') }}.webp" alt="" height="100">
+                            <img src="{{ asset('assets/images/' . env('APP_LOGO') . 'webp') }}" alt="" height="100">
                         </a>
                     </div>
                     <p class="mt-3 fs-3 fw-bold text-white">Dashboard Admin SIKI</p>
@@ -72,7 +72,7 @@
         </div>
         <!-- end row -->
 
-        <script type="text/javascript" src="/../assets/libs/jquery/jquery-2.2.4.min.js"></script>
+        <script type="text/javascript" src="{{ asset('assets/libs/jquery/jquery-2.2.4.min.js') }}"></script>
         <script>
             $('#verifyForm').on('submit', function (e) {
                 e.preventDefault();
@@ -201,7 +201,5 @@
                 });
             });
         </script>
-
-
 
         @include('partials.footer')

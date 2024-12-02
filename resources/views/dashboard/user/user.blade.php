@@ -27,6 +27,36 @@
 
                     @include('dashboard.partials.page-title', ["pagetitle" => "User", "title" => "User"])
 
+                    {{-- jika data User sudah da pakai ini --}}
+                    {{-- <div class="row">
+                        <div class="col-lg-12">
+                            <div class="minimal-border w-100">
+                                @php
+                                    $headersUser = ['#', 'Nama Lengkap', 'Email', 'Nomor Telp', 'Jabatan', 'Divisi', 'Aksi'];
+                                    $rowsUser = collect($dataUser)->map(function ($data, $index) {
+                                        return [
+                                            $index + 1,
+                                            $data['fullname'],
+                                            $data['email'],
+                                            $data['phone'],
+                                            $data['role'],
+                                            $data['group']['name'] ?? '-',
+                                            '<div class="hstack gap-3 flex-wrap">
+                                                <a href="javascript:void(0);" class="link-success fs-15" title="detail"><i class="ri-eye-close-line"></i></a>
+                                                <a href="javascript:void(0);" class="link-danger fs-15"><i class="ri-delete-bin-line"></i></a>
+                                            </div>',
+                                        ];
+                                    })->toArray();
+                                @endphp
+                                <x-card :title="'Data User'">
+                                    <x-table id="table-user" :headers="$headersUser" :rows="$rowsUser" />
+                                </x-card>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                    </div> --}}
+                    <!-- end row -->
+
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="minimal-border w-100">

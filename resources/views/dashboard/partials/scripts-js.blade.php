@@ -1,18 +1,18 @@
 <!-- JAVASCRIPT -->
-<script type="text/javascript" src="/../assets/libs/jquery/jquery-2.2.4.min.js"></script>
-<script src="/../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="/../assets/libs/simplebar/simplebar.min.js"></script>
-<script src="/../assets/libs/node-waves/waves.min.js"></script>
-<script src="/../assets/libs/feather-icons/feather.min.js"></script>
-<script src="/../assets/js/pages/plugins/lord-icon-2.1.0.js"></script>
-<script src="/../assets/js/plugins.js"></script>
-<!-- App js -->
-<script src="/../assets/js/app.js"></script>
-<!-- Sweet Alerts js -->
-<script src="/../assets/libs/sweetalert2/sweetalert2.min.js"></script>
-<!-- Sweet alert init js-->
-<script src="/../assets/js/pages/sweetalerts.init.js"></script>
+<script type="text/javascript" src="{{ asset('assets/libs/jquery/jquery-2.2.4.min.js') }}"></script>
+<script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
+<script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
+<script src="{{ asset('assets/libs/feather-icons/feather.min.js') }}"></script>
+<script src="{{ asset('assets/js/pages/plugins/lord-icon-2.1.0.js') }}"></script>
+<script src="{{ asset('assets/js/plugins.js') }}"></script>
 
+<!-- App js -->
+<script src="{{ asset('assets/js/app.js') }}"></script>
+<!-- Sweet Alerts js -->
+<script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+<!-- Sweet alert init js -->
+<script src="{{ asset('assets/js/pages/sweetalerts.init.js') }}"></script>
 
 <!--datatable js-->
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>

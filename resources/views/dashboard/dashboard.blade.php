@@ -348,20 +348,16 @@
 
     <!-- link js -->
      <!-- apexcharts -->
-     <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
-
+     <script src="{{ asset('assets/libs/apexcharts/apexcharts.min.js') }}"></script>
      <!--Swiper slider js-->
-     <script src="assets/libs/swiper/swiper-bundle.min.js"></script>
-
+     <script src="{{ asset('assets/libs/swiper/swiper-bundle.min.js') }}"></script>
      <!-- Marketplace init -->
-     <script src="assets/js/pages/dashboard-nft.init.js"></script>
+     <script src="{{ asset('assets/js/pages/dashboard-nft.init.js') }}"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const greetingElement = document.getElementById('greeting');
-
             const currentHour = new Date().getHours();
-
             let greeting;
             if (currentHour >= 5 && currentHour < 12) {
                 greeting = "Pagi";
@@ -370,10 +366,8 @@
             } else {
                 greeting = "Malam";
             }
-
             greetingElement.textContent = greeting;
         });
-
     </script>
 
 </body>

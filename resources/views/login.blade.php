@@ -8,7 +8,7 @@
                 <div class="text-center mt-sm-5 mb-4 text-white-50">
                     <div>
                         <a href="" class="d-inline-block auth-logo">
-                            <img src="/../assets/images/{{ env('APP_LOGO') }}.webp" alt="" height="100">
+                            <img src="{{ asset('assets/images/' . env('APP_LOGO') . 'webp') }}" alt="" height="100">
                         </a>
                     </div>
                     <p class="mt-3 fs-3 fw-bold text-white">Dashboard Admin SIKI</p>
@@ -28,9 +28,9 @@
                             <div id="returned-error"></div>
                             <form id="loginForm">
                                 <div class="mb-3">
-                                    <label for="username" class="form-label">Nama Pengguna/Email/Telepon</label>
+                                    <label for="username" class="form-label">Nama Pengguna/Email</label>
                                     <input name="username" type="text" class="form-control" id="username"
-                                        placeholder="Masukkan Nama Pengguna/Email/Telepon">
+                                        placeholder="Masukkan Nama Pengguna/Email">
                                     <div id="username-error" class="text-danger-emphasis"></div>
                                 </div>
 
@@ -82,7 +82,7 @@
         <!-- end row -->
 
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-        <script type="text/javascript" src="/../assets/libs/jquery/jquery-2.2.4.min.js"></script>
+        <script type="text/javascript" src="{{ asset('assets/libs/jquery/jquery-2.2.4.min.js') }}"></script>
         <script>
             function togglePasswordVisibility(inputId, button) {
                 const input = document.getElementById(inputId);
@@ -111,19 +111,18 @@
                     },
                     success: function (data) {
                         if (data.error == true) {
-                            var hasOtherErrors = false; // Untuk cek apakah ada error lain
-                            // Validasi error input lainnya
+                            var hasOtherErrors = false;
+
                             $.each(data.message, function (field, error) {
                                 $('#' + field + '-error').html(error);
-                                hasOtherErrors = true; // Tanda bahwa ada error di input lain
+                                hasOtherErrors = true;
                             });
 
-                            // Pengecekan captcha setelah validasi input lainnya
+
                             if (grecaptcha.getResponse() == "") {
                                 $('#captcha-error').html('Lengkapi Captcha agar Anda dapat melanjutkan.');
                             }
                             if (hasOtherErrors) {
-                                // Reset captcha jika ada error di input lain
                                 grecaptcha.reset();
                             }
 

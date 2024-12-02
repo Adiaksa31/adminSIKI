@@ -10,15 +10,17 @@ use App\Http\Requests\AddAdminRequest;
 
 class AdminController extends Controller
 {
-    public function admin() {
+    public function admin()
+    {
+        $dataStaff = ApiHelper::request("GET", "/admin_staff")['data'];
+        $dataSpv = ApiHelper::request("GET", "/admin_spv")['data'];
+        $dataManager = ApiHelper::request("GET", "/admin_manager")['data'];
 
-        $data = ApiHelper::request("GET", "/admin/get_staff");
-        $dataStaff = $data['data'];
         // dd($dataStaff);
-        return view('dashboard.admin.admin', compact('dataStaff'));
+        return view('dashboard.admin.admin', compact('dataStaff', 'dataSpv', 'dataManager'));
     }
 
-    public function addAdmin(AddAdminRequest $request)
+    private function addUser($url, $request)
     {
         if(!$request->ajax()){
             return redirect()->back();
@@ -30,29 +32,30 @@ class AdminController extends Controller
             "address",
             "phone",
             "division_id",
+            "group_id",
         ];
         $requestData = RequestHelper::sanitize($request, $keys);
         try {
-            ApiHelper::request("POST", "/admin/create_staff", [
+            ApiHelper::request("POST", $url, [
                 "form_params" => $requestData,
             ]);
             return response()->json([
                 'error' => false,
                 'message'   => [
-                    'returned'	=> '<div class="alert alert-success alert-dismissible fade show" role="alert">Berhasil Masuk SIKI. Silakan cek email Anda.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+                    'returned'	=> '<div class="alert alert-success alert-dismissible fade show" role="alert">Berhasil menambahkan user.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
                 ],
             ]);
-        }catch(ClientException $e) {
-            $statusCode = $e->getResponse()->getStatusCode();
+        } catch(ClientException $e) {
             // dd($e);
-            $msg = "Gagal Masuk SIKI, Data tidak Valid.";
-            if ( $statusCode == 409 ) {
-                $msg = "Email atau Username sudah terdaftar.";
-            }else if($statusCode == 403) {
-                $msg = "Kamu tidak memiliki akses untuk melakukan aksi ini.";
-            }else if($statusCode == 422) {
-                $msg = "Divisi tidak ditemukan.";
-            }
+            $statusCode = $e->getResponse()->getStatusCode();
+            $msgs = [
+                409 => "Email atau Username sudah terdaftar.",
+                403 => "Kamu tidak memiliki akses untuk melakukan aksi ini.",
+                422 => "Divisi atau Group tidak ditemukan.",
+            ];
+
+            $msg = $msgs[$statusCode] ?? "Gagal Mengirim Data.";
+
             return response()->json([
                 'error'     => true,
                 'message'   => [
@@ -60,5 +63,18 @@ class AdminController extends Controller
                 ],
             ]);
         }
+    }
+
+    public function addStaff(AddAdminRequest $request)
+    {
+        return $this->addUser('/admin/create_staff', $request);
+    }
+    public function addSpv(AddAdminRequest $request)
+    {
+        return $this->addUser('/admin/create_spv', $request);
+    }
+    public function addManager(AddAdminRequest $request)
+    {
+        return $this->addUser('/admin/create_manager', $request);
     }
 }
