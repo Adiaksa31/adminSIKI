@@ -13,10 +13,10 @@ class AdminController extends Controller
     public function admin()
     {
         $dataStaff = ApiHelper::request("GET", "/admin_staff")['data'];
-        $dataSpv = ApiHelper::request("GET", "/admin_spv")['data'];
+        $dataSpv = ApiHelper::request("GET", "/admin_supervisor")['data'];
         $dataManager = ApiHelper::request("GET", "/admin_manager")['data'];
 
-        // dd($dataStaff);
+        // dd($dataManager);
         return view('dashboard.admin.admin', compact('dataStaff', 'dataSpv', 'dataManager'));
     }
 
@@ -42,7 +42,7 @@ class AdminController extends Controller
             return response()->json([
                 'error' => false,
                 'message'   => [
-                    'returned'	=> '<div class="alert alert-success alert-dismissible fade show" role="alert">Berhasil menambahkan user.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+                    'returned'	=> '<div class="alert alert-success alert-dismissible fade show" role="alert">Berhasil menambahkan data.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
                 ],
             ]);
         } catch(ClientException $e) {
@@ -67,14 +67,14 @@ class AdminController extends Controller
 
     public function addStaff(AddAdminRequest $request)
     {
-        return $this->addUser('/admin/create_staff', $request);
+        return $this->addUser('/admin_staff/create', $request);
     }
     public function addSpv(AddAdminRequest $request)
     {
-        return $this->addUser('/admin/create_spv', $request);
+        return $this->addUser('/admin_supervisor/create', $request);
     }
     public function addManager(AddAdminRequest $request)
     {
-        return $this->addUser('/admin/create_manager', $request);
+        return $this->addUser('/admin_manager/create', $request);
     }
 }

@@ -355,17 +355,17 @@
      <script src="{{ asset('assets/js/pages/dashboard-nft.init.js') }}"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+       document.addEventListener('DOMContentLoaded', function () {
             const greetingElement = document.getElementById('greeting');
             const currentHour = new Date().getHours();
-            let greeting;
-            if (currentHour >= 5 && currentHour < 12) {
-                greeting = "Pagi";
-            } else if (currentHour >= 12 && currentHour < 18) {
-                greeting = "Siang";
-            } else {
-                greeting = "Malam";
-            }
+            const greetings = [
+                { range: [5, 10], message: "Pagi" },
+                { range: [11, 15], message: "Siang" },
+                { range: [15, 18], message: "Sore" },
+                { range: [19, 24], message: "Malam" },
+                { range: [0, 5], message: "Malam" },
+            ];
+            const greeting = greetings.find(({ range }) => currentHour >= range[0] && currentHour < range[1])?.message || "Malam";
             greetingElement.textContent = greeting;
         });
     </script>
