@@ -39,7 +39,7 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link menu-link {{ Request::is('admin*') || Request::is('tambah-admin') ? 'active fw-bold' : '' }}" href="#sidebarAdmins" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarAdmins">
                         <i class="ri-user-2-line"></i> <span data-key="t-admins">Admin</span>
                     </a>
@@ -53,9 +53,14 @@
                             </li>
                         </ul>
                     </div>
-                </li>
+                </li> --}}
 
                 <li class="menu-title"><span data-key="t-menu">Menu</span></li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link {{ Request::is('admin*') || Request::is('tambah-admin') ? 'active fw-bold' : '' }}" href="{{ route('admin') }}">
+                        <i class="ri-user-2-line"></i> <span data-key="t-admins">Admin</span>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link menu-link {{ Request::is('user') ? 'active fw-bold' : '' }}" href="{{ route('user') }}">
                         <i class="ri-team-line"></i> <span data-key="t-users">User</span>

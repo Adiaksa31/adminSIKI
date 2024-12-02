@@ -27,6 +27,37 @@
 
                     @include('dashboard.partials.page-title', ["pagetitle" => "Koperasi", "title" => "Koperasi"])
 
+                    {{-- jika data koperasi sudah da pakai ini --}}
+                    {{-- <div class="row">
+                        <div class="col-lg-12">
+                            <div class="minimal-border w-100">
+                                @php
+                                    $headersKoperasi = ['#', 'Nama Lengkap', 'Email', 'Nomor Telp', 'Jabatan', 'Divisi', 'Aksi'];
+                                    $rowsKoperasi = collect($dataKoperasi)->map(function ($data, $index) {
+                                        return [
+                                            $index + 1,
+                                            $data['fullname'],
+                                            $data['email'],
+                                            $data['phone'],
+                                            $data['role'],
+                                            $data['group']['name'] ?? '-',
+                                            '<div class="hstack gap-3 flex-wrap">
+                                                <a href="javascript:void(0);" class="link-success fs-15" title="detail"><i class="ri-eye-close-line"></i></a>
+                                                <a href="javascript:void(0);" class="link-danger fs-15"><i class="ri-delete-bin-line"></i></a>
+                                            </div>',
+                                        ];
+                                    })->toArray();
+                                @endphp
+                                <x-card :title="'Data Koperasi'">
+                                    <x-table id="table-koperasi" :headers="$headersKoperasi" :rows="$rowsKoperasi" />
+                                </x-card>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                    </div> --}}
+                    <!-- end row -->
+
+
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="minimal-border w-100">
@@ -83,8 +114,6 @@
                         <!-- end col -->
                     </div>
                     <!-- end row -->
-
-
                 </div>
                 <!-- container-fluid -->
             </div>

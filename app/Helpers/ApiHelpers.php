@@ -38,13 +38,19 @@ class ApiHelper {
         }
         // call
         $response = $client->request($method, $fullpath, $data);
+        // dd($response);
         return $response;
     }
     public static function request($method, $path, $body=null, $additionalHeaders=[]) :array {
         $response = self::rawRequest($method, $path, $body, $additionalHeaders);
         // parse json
         $body = $response->getBody()->getContents();
+        $statusCode = $response->getStatusCode();
         $data = json_decode($body, true);
+        // dd($data);
+        if ($statusCode == 401) {
+            return redirect()->route('login');
+        }
         return $data;
     }
 

@@ -5,22 +5,24 @@
 
     <meta charset="utf-8" />
     <title>{{ $title }} | Admin SIKI</title>
+    <meta name="robots" content="noindex, nofollow">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="/../assets/images/{{ env('APP_LOGO') }}.webp">
+    <link rel="shortcut icon" href="{{ asset('assets/images/' . env('APP_LOGO') . '.webp') }}">
     <!-- Layout config Js -->
-    <script src="assets/js/layout.js"></script>
+    <script src="{{ asset('assets/js/layout.js') }}"></script>
     <!-- Bootstrap Css -->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- Icons Css -->
-    <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
-    <!-- App Css-->
-    <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" />
-    <!-- custom Css-->
-    <link href="assets/css/custom.css" rel="stylesheet" type="text/css" />
-  
+    <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+    <!-- App Css -->
+    <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
+    <!-- Custom Css -->
+    <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
+
+
     {!! NoCaptcha::renderJs() !!}
 
 </head>
