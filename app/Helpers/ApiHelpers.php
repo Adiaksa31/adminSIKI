@@ -37,8 +37,8 @@ class ApiHelper {
             $data = array_merge($body, $data);
         }
         // call
+        // dd($client);
         $response = $client->request($method, $fullpath, $data);
-        // dd($response);
         return $response;
     }
     public static function request($method, $path, $body=null, $additionalHeaders=[]) :array {

@@ -71,7 +71,7 @@
                                     $item['email'],
                                     $item['phone'],
                                     $item['role'],
-                                    isset($item['groups'][0]['name']) ? $item['groups'][0]['name'] : '-',
+                                    isset($item['groups']['name']) ? $item['groups']['name'] : '-',
                                     '<div class="hstack gap-3 flex-wrap">
                                         <a href="' . route('edit-admin', ['paramId' => $item['username']]) . '" class="link-success fs-15" title="detail"><i class="ri-pencil-line"></i></a>
                                         <a href="javascript:void(0);" class="link-danger fs-15"><i class="ri-delete-bin-line"></i></a>

@@ -23,6 +23,19 @@ Route::middleware(['check.useragent.ip'])->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         Route::prefix("/dashboard")->group(function () {
             Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
+
+        });
+        Route::prefix("/groups")->group(function () {
+            Route::get('/divisi', [DashboardController::class, 'divisi'])->name('divisi');
+            Route::post('/add-divisi', [DashboardController::class, 'addDivisi'])->name('add.divisi');
+            Route::get('/find-divisi', [DashboardController::class, 'findDivisi'])->name('find.divisi');
+            Route::patch('/update-divisi', [DashboardController::class, 'updateDivisi'])->name('update.divisi');
+            Route::get('/category', [DashboardController::class, 'category'])->name('category');
+            Route::get('/list-category', [DashboardController::class, 'listCategory'])->name('list.category');
+            Route::post('/add-category', [DashboardController::class, 'addCategory'])->name('add.category');
+            Route::get('/find-category', [DashboardController::class, 'findCategory'])->name('find.category');
+            Route::get('/update-category', [DashboardController::class, 'updateCategory'])->name('update.category');
+            Route::get('/toggle-category', [DashboardController::class, 'toggleActive'])->name('toggle.active');
         });
         Route::prefix("/admin")->group(function () {
             Route::get('/', [AdminController::class, 'admin'])->name('admin');

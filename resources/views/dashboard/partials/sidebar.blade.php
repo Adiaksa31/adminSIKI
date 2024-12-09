@@ -38,6 +38,27 @@
                         <i class="ri-dashboard-line"></i> <span data-key="t-dashboards">Dashboard</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link {{ Request::is('groups*') || Request::is('divisi') || Request::is('category') ? 'active fw-bold' : '' }}" href="#sidebarAdmins" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarAdmins">
+                        <i class="ri-user-2-line"></i> <span data-key="t-admins">Groups</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarAdmins">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{ route('divisi') }}" class="nav-link" data-key="t-tambah-admin">Divisi</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('category') }}" class="nav-link" data-key="t-kelola-admin">Category</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('divisi') }}" class="nav-link" data-key="t-kelola-admin">Permission</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('divisi') }}" class="nav-link" data-key="t-kelola-admin">Group Permission</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
 
                 {{-- <li class="nav-item">
                     <a class="nav-link menu-link {{ Request::is('admin*') || Request::is('tambah-admin') ? 'active fw-bold' : '' }}" href="#sidebarAdmins" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarAdmins">
