@@ -27,10 +27,38 @@
 
                     @include('dashboard.partials.page-title', ["pagetitle" => "Admin", "title" => "Admin"])
                     <div class="d-flex align-items-center justify-content-between mb-3">
-                        <h4 class="mb-0">Data Admin</h4>
-                        <a href="{{ route('tambah-admin') }}" class="btn btn-primary fw-bold">
-                            <i class="ri-user-2-line"></i> Tambah Admin
-                        </a>
+                        <h4 class="mb-0">Data Admin
+                            @if ($selectedGroup)
+                            - {{ $selectedGroup }}
+                            @endif
+                        </h4>
+
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownFilter" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @if ($selectedGroup)
+                                        {{ $selectedGroup }}
+                                    @else
+                                    Semua Divisi
+                                    @endif
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownFilter">
+                                    <li><a class="dropdown-item" href="{{ route('admin') }}">Semua Divisi</a></li>
+                                    @foreach ($dataGroups as $group)
+                                        <li>
+                                            <a class="dropdown-item" href="{{ route('admin', ['divisi' => $group['name']]) }}">
+                                                {{ $group['name'] }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+
+                            <!-- Button to add admin -->
+                            <a href="{{ route('tambah-admin') }}" class="btn btn-primary fw-bold">
+                                <i class="ri-user-2-line"></i> Tambah Admin
+                            </a>
+                        </div>
                     </div>
 
                     @php
@@ -43,9 +71,9 @@
                                     $item['email'],
                                     $item['phone'],
                                     $item['role'],
-                                    $item['group']['name'] ?? '-',
+                                    isset($item['groups'][0]['name']) ? $item['groups'][0]['name'] : '-',
                                     '<div class="hstack gap-3 flex-wrap">
-                                        <a href="javascript:void(0);" class="link-success fs-15" title="detail"><i class="ri-eye-close-line"></i></a>
+                                        <a href="' . route('edit-admin', ['paramId' => $item['username']]) . '" class="link-success fs-15" title="detail"><i class="ri-pencil-line"></i></a>
                                         <a href="javascript:void(0);" class="link-danger fs-15"><i class="ri-delete-bin-line"></i></a>
                                     </div>',
                                 ];

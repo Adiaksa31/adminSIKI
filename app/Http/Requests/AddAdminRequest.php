@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
 
 class AddAdminRequest extends BaseRequest
 {
@@ -21,12 +23,14 @@ class AddAdminRequest extends BaseRequest
      */
     public function rules(): array
     {
+        $allowedValues = $this->input('allowed_values', []);
         return [
             'fullname' => 'required|string|max:100',
             'email' => 'required|email|max:150',
             'username' => 'required|string|max:50',
             'address' => 'required|string',
             'phone' => 'required|string|max:15',
+            'group_id' => ['required', Rule::in($allowedValues)],
         ];
     }
 
@@ -51,6 +55,9 @@ class AddAdminRequest extends BaseRequest
             'phone.required' => 'Nomor telepon harus diisi.',
             'phone.string' => 'Nomor telepon harus berupa string.',
             'phone.max' => 'Nomor telepon tidak boleh lebih dari :max 15 karakter.',
+
+            'group_id.required' => 'Divisi harus diisi.',
+            'group_id.in' => 'Divisi yang dipilih tidak valid.'
 
         ];
     }

@@ -13,10 +13,10 @@ Route::middleware(['check.useragent.ip'])->group(function () {
 
     Route::middleware(['guestApi'])->group(function (){
         Route::get('/', function () { return view('login'); })->name('login');
-        Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
-        Route::get('/verify/{verify_key}', [AuthController::class, 'showVerifikasi'])->name('verify-login');
-        Route::post('/verify/submit', [AuthController::class, 'verify'])->name('verify.submit');
-        Route::post('/verify/resend-otp', [AuthController::class, 'resendOtp'])->name('resendOtp');
+        Route::post('/masuk', [AuthController::class, 'login'])->name('login.submit');
+        Route::get('/verifikasi/{verify_key}', [AuthController::class, 'showVerifikasi'])->name('verify-login');
+        Route::post('/verifikasi/submit', [AuthController::class, 'verify'])->name('verify.submit');
+        Route::post('/verifikasi/resend-otp', [AuthController::class, 'resendOtp'])->name('resendOtp');
     });
 
     Route::middleware(["authApi"])->group(function () {
@@ -26,14 +26,14 @@ Route::middleware(['check.useragent.ip'])->group(function () {
         });
         Route::prefix("/admin")->group(function () {
             Route::get('/', [AdminController::class, 'admin'])->name('admin');
-            Route::get('/tambah-admin', function () { return view('dashboard.admin.create-admin'); })->name('tambah-admin');
+            Route::get('/tambah-admin', [AdminController::class, 'addAdmin'])->name('tambah-admin');
             Route::post('/tambah-staff', [AdminController::class, 'addStaff'])->name('adminStaff.submit');
             Route::post('/tambah-spv', [AdminController::class, 'addSpv'])->name('adminSpv.submit');
             Route::post('/tambah-manager', [AdminController::class, 'addManager'])->name('adminManager.submit');
+            Route::get('/edit-admin/{paramId}', [AdminController::class, 'editAdmin'])->name('edit-admin');
+            Route::post('/edit-admin/{paramId}/tes', [AdminController::class, 'updateAdmin'])->name('edit-admin.submit');
         });
     });
-
-
 
     Route::prefix("/user")->group(function () {
         Route::get('/', function () { return view('dashboard.user.user'); })->name('user');
