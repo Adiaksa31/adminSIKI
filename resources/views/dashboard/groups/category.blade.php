@@ -29,18 +29,29 @@
                             <div class="col-lg-12">
                                 <div class="minimal-border w-100">
                                     @php
-                                        $headersGroup = ['#', 'Nama Category', 'Description', 'Aksi'];
+                                        $headersGroup = ['#', 'Nama Category', 'Description', 'Permissions', 'Aksi'];
+
                                         $rowsGroup = collect($categories ?? [])->map(function ($data, $index) {
+                                            // Menyusun daftar permissions menjadi string
+                                            $permissionsList = isset($data['permissions']) && is_array($data['permissions'])
+                                                ? '<ul>' . collect($data['permissions'])->map(function ($permission) {
+                                                    return '<li>' . ($permission['name'] ?? '-') . '</li>';
+                                                })->implode('') . '</ul>'
+                                                : '-';
+
                                             return [
                                                 $index + 1,
                                                 $data['name'] ?? '-',
                                                 $data['description'] ?? '-',
+                                                $permissionsList,
                                                 '<div class="hstack gap-3 flex-wrap">
-                                                <a href="' . $data['id'] . '" class="link-success fs-15" title="Edit"><i class="ri-pencil-line"></i></a>
-                                                <a href="javascript:void(0);" data-id="' . $data['id'] . '" class="link-warning toggle-active fs-15" title="Toggle Active">
-                                                <i class="ri-toggle-fill"></i>
-                                                </a>
-                                            </div>',
+                                                    <a href="" class="link-success fs-15" title="Edit">
+                                                        <i class="ri-pencil-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" data-id="' . $data['id'] . '" class="link-warning toggle-active fs-15" title="Toggle Active">
+                                                        <i class="ri-toggle-fill"></i>
+                                                    </a>
+                                                </div>',
                                             ];
                                         })->toArray();
                                     @endphp

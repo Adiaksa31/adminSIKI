@@ -20,11 +20,11 @@ class AdminController extends Controller
         $dataManager = ApiHelper::request("GET", "/admin/manager")['data'];
 
         if ($selectedGroup) {
-            $dataStaff = collect($dataStaff)->filter(fn($item) => $item['groups'][0]['name'] === $selectedGroup)->toArray();
-            $dataSpv = collect($dataSpv)->filter(fn($item) => $item['groups'][0]['name'] === $selectedGroup)->toArray();
-            $dataManager = collect($dataManager)->filter(fn($item) => $item['groups'][0]['name'] === $selectedGroup)->toArray();
+            $dataStaff = collect($dataStaff)->filter(fn($item) => $item['group']['name'] === $selectedGroup)->toArray();
+            $dataSpv = collect($dataSpv)->filter(fn($item) => $item['group']['name'] === $selectedGroup)->toArray();
+            $dataManager = collect($dataManager)->filter(fn($item) => $item['group']['name'] === $selectedGroup)->toArray();
         }
-        // dd($dataStaff);
+        // dd($dataManager);
         return view('dashboard.admin.admin', compact('dataStaff', 'dataSpv', 'dataManager', 'dataGroups', 'selectedGroup'));
     }
 
@@ -147,4 +147,99 @@ class AdminController extends Controller
             ]);
         }
     }
+
+
+    public function adminPermission($paramId)
+    {
+        $userData = ApiHelper::request("GET", "/admin/{$paramId}")['data'];
+        $paramIds = $userData['id'];
+        $categories = ApiHelper::request("GET", "/permission_category")['data'];
+        $dataPermis = ApiHelper::request("GET", "/admin/{$paramIds}/get_default_permission");
+        $data = ApiHelper::request("GET", "/admin/{$paramIds}/get_permission")['data'];
+        // dd($data);
+        return view('dashboard.admin.admin-permission', compact('userData', 'dataPermis', 'data', 'categories'));
+    }
+
+    public function grant(Request $request, $paramId)
+    {
+        if (!$request->ajax()) {
+            return redirect()->back();
+        }
+        $permissionIds = $request->input('permission_ids', []);
+        $permissionIds = array_map('intval', $permissionIds);
+        $jsonData = [
+            'permission_ids' => $permissionIds,
+        ];
+        // dd($jsonData);
+        try {
+            // Make the API request to grant permissions
+            ApiHelper::request("POST", "/admin/{$paramId}/grant_permission", [
+                'json' => $jsonData
+            ], [
+                'Content-Type' => 'application/json',
+            ]);
+                return response()->json([
+                    'error' => false,
+                    'message' => [
+                        'returned' => '<div class="alert alert-success alert-dismissible fade show" role="alert">Permission berhasil di setting.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+                    ],
+                ]);
+        } catch (ClientException $e) {
+            $statusCode = $e->getResponse()->getStatusCode();
+            // dd($e);
+            $msgs = [
+                422 => "ID tidak ditemukan.",
+            ];
+            $msg = $msgs[$statusCode] ?? "Gagal Mengirim Data.";
+            return response()->json([
+                'error' => true,
+                'status' => $statusCode,
+                'message' => [
+                    'returned' => '<div class="alert alert-warning alert-dismissible fade show" role="alert">' . $msg . '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+                ],
+            ]);
+        }
+    }
+
+    public function revoke(Request $request, $paramId)
+    {
+        if (!$request->ajax()) {
+            return redirect()->back();
+        }
+        $permissionIds = $request->input('permission_ids', []);
+        $permissionIds = array_map('intval', $permissionIds);
+        $jsonData = [
+            'permission_ids' => $permissionIds,
+        ];
+        // dd($requestData);
+        try {
+            ApiHelper::request("DELETE", "/admin/{$paramId}/revoke_permission", [
+                'json' => $jsonData
+            ], [
+                'Content-Type' => 'application/json',
+            ]);
+
+            return response()->json([
+                'error' => false,
+                'message' => [
+                    'returned' => '<div class="alert alert-success alert-dismissible fade show" role="alert">Permission berhasil di setting.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+                ],
+            ]);
+        } catch (ClientException $e) {
+            $statusCode = $e->getResponse()->getStatusCode();
+            // dd($e);
+            $msgs = [
+                422 => "ID tidak ditemukan.",
+            ];
+            $msg = $msgs[$statusCode] ?? "Gagal Mengirim Data.";
+            return response()->json([
+                'error' => true,
+                'status' => $statusCode,
+                'message' => [
+                    'returned' => '<div class="alert alert-warning alert-dismissible fade show" role="alert">' . $msg . '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+                ],
+            ]);
+        }
+    }
+
 }

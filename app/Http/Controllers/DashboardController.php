@@ -6,9 +6,6 @@ use App\Helpers\ApiHelper;
 use Illuminate\Http\Request;
 use GuzzleHttp\Exception\ClientException;
 use App\Helpers\RequestHelper;
-use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class DashboardController extends Controller
@@ -26,6 +23,7 @@ class DashboardController extends Controller
     public function category()
     {
         $categories = ApiHelper::request("GET", "/permission_category")['data'];
+        // dd($categories);
         return view('dashboard.groups.category', compact('categories'));
     }
 

@@ -39,6 +39,9 @@ Route::middleware(['check.useragent.ip'])->group(function () {
         });
         Route::prefix("/admin")->group(function () {
             Route::get('/', [AdminController::class, 'admin'])->name('admin');
+            Route::get('/permission/{paramId}', [AdminController::class, 'adminPermission'])->name('admin-permission');
+            Route::post('/permission/{paramId}/grant', [AdminController::class, 'grant'])->name('permission-grant');
+            Route::post('/permission/{paramId}/revoke', [AdminController::class, 'revoke'])->name('permission-revoke');
             Route::get('/tambah-admin', [AdminController::class, 'addAdmin'])->name('tambah-admin');
             Route::post('/tambah-staff', [AdminController::class, 'addStaff'])->name('adminStaff.submit');
             Route::post('/tambah-spv', [AdminController::class, 'addSpv'])->name('adminSpv.submit');

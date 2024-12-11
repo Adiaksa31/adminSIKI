@@ -66,7 +66,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="mb-3">
-                                                <input type="text" name="group_id" value="{{ $userData['groups'][0]['id'] }}" class="d-none">
+                                                <input type="text" name="group_id" value="{{ $userData['group']['id'] }}" class="d-none">
                                             </div>
                                         </div>
                                     </div>
