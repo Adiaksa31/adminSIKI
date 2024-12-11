@@ -23,39 +23,233 @@ class DashboardController extends Controller
         return view('dashboard.dashboard');
     }
 
+
+    // category
     public function category()
     {
-        $categories = ApiHelper::request("GET", "/permission_category")['data'];
-        return view('dashboard.groups.category', compact('categories'));
+        $dataGroup = ApiHelper::request("GET", "/permission_category")['data'];
+        return view('dashboard.groups.category', compact('dataGroup'));
     }
-
-
-
-    public function addcategory(Request $request)
+    
+    public function addCategory(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string',
-        ]);
-
-        $categoryData = [
-            'name' => $request->input('name'),
+        if (!$request->ajax()) {
+            return redirect()->back();
+        }
+        $keys = [
+            "name",
         ];
-
+        $rules = [
+            "name" => 'required|string'
+        ];
+        $messages = [
+            'name.required' => 'Category harus diisi',
+            'name.string' => 'Category harus berupa string'
+        ];
+    
+        $validator = Validator::make(
+            $request->all(),
+            $rules,
+            $messages
+        );
+    
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => true,
+                'message' => $validator->errors()
+            ]);
+        }
+    
+        $requestData = RequestHelper::sanitize($request, $keys);
         try {
             ApiHelper::request("POST", '/permission_category/create', [
-                'form_params' => $categoryData,
+                "form_params" => $requestData,
             ]);
-
-            return redirect()->route('dashboard/category')->with('success', 'Category added successfully.');
+            return response()->json([
+                'error' => false,
+                'message' => [
+                    'returned' => '<div class="alert alert-success alert-dismissible fade show" role="alert">Berhasil menambahkan category.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+                ],
+            ]);
         } catch (ClientException $e) {
             $statusCode = $e->getResponse()->getStatusCode();
-            dd($e);
-            $msg = $statusCode == 400 ? 'Invalid input.' : 'Error adding category.';
-            return back()->with('error', $msg);
+            $msgs = [
+                400 => "Terjadi kesalahan, coba lagi nanti",
+            ];
+    
+            $msg = $msgs[$statusCode] ?? "Gagal Mengirim Data.";
+    
+            return response()->json([
+                'error' => true,
+                'message' => [
+                    'returned' => '<div class="alert alert-warning alert-dismissible fade show" role="alert">' . $msg . '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+                ],
+            ]);
         }
-
     }
+    
+    public function findCategory(Request $request)
+    {
+        if (!$request->ajax()) {
+            return redirect()->back();
+        }
+    
+        $rules = ['id' => 'required|integer'];
+        $messages = [
+            'id.required' => 'ID is required',
+            'id.integer' => 'ID must be an integer'
+        ];
+    
+        $validator = Validator::make($request->all(), $rules, $messages);
+    
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => true,
+                'message' => $validator->errors()
+            ]);
+        }
+    
+        $id = $request->input('id');
+    
+        try {
+            $response = ApiHelper::request("GET", "/permission_category/{$id}", []);
+    
+            if ($response['status'] === 200) {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'OK',
+                    'data' => $response['data']
+                ]);
+            } else {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Failed to fetch category data'
+                ]);
+            }
+    
+        } catch (ClientException $e) {
+            $statusCode = $e->getResponse()->getStatusCode();
+            $msg = $statusCode === 404 ? "Category not found" : "An error occurred";
+    
+            return response()->json([
+                'error' => true,
+                'message' => $msg
+            ]);
+        }
+    }
+    
+    public function updateCategory(Request $request)
+    {
+        if (!$request->ajax()) {
+            return redirect()->back();
+        }
+    
+        $keys = [
+            "name",
+        ];
+    
+        $rules = ['id' => 'required|integer'];
+        $messages = [
+            'id.required' => 'ID is required',
+            'id.integer' => 'ID must be an integer'
+        ];
+    
+        $validator = Validator::make($request->all(), $rules, $messages);
+    
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => true,
+                'message' => $validator->errors()
+            ]);
+        }
+    
+        $id = $request->input('id');
+    
+        $requestData = RequestHelper::sanitize($request, $keys);
+    
+        try {
+            $response = ApiHelper::request("PATCH", "/permission_category/{$id}/update", [
+                "form_params" => $requestData,
+            ]);
+    
+            if ($response['status'] === 200) {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'OK',
+                    'data' => $response
+                ]);
+            } else {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Failed to fetch category data'
+                ]);
+            }
+    
+        } catch (ClientException $e) {
+            $statusCode = $e->getResponse()->getStatusCode();
+            $msg = $statusCode === 404 ? "Category not found" : "An error occurred";
+    
+            return response()->json([
+                'error' => true,
+                'message' => $msg
+            ]);
+        }
+    }
+    
+    public function deleteCategory(Request $request)
+    {
+        if (!$request->ajax()) {
+            return redirect()->back();
+        }
+    
+        $rules = ['id' => 'required|integer'];
+        $messages = [
+            'id.required' => 'ID is required',
+            'id.integer' => 'ID must be an integer'
+        ];
+    
+        $validator = Validator::make($request->all(), $rules, $messages);
+    
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => true,
+                'message' => $validator->errors()
+            ]);
+        }
+    
+        $id = $request->input('id');
+    
+        try {
+            $response = ApiHelper::request("PATCH", "/permission_category/{$id}/toggle_hide", []);
+    
+            if ($response['status'] === 200) {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'OK',
+                    'data' => $response['data']
+                ]);
+            } else {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Failed to fetch category data'
+                ]);
+            }
+    
+        } catch (ClientException $e) {
+            $statusCode = $e->getResponse()->getStatusCode();
+            $msg = $statusCode === 404 ? "Category not found" : "An error occurred";
+    
+            return response()->json([
+                'error' => true,
+                'message' => $msg
+            ]);
+        }
+    }
+    
 
+    // endcategory
+
+    // divisi
     public function divisi()
     {
         $dataGroup = ApiHelper::request("GET", "/group")['data'];
@@ -279,5 +473,73 @@ class DashboardController extends Controller
             ]);
         }
     }
+    // endivisi
+
+    //permission
+
+    public function permission()
+{
+    $dataPermission = ApiHelper::request("GET", "/permission_category")['data'];
+    // dd($dataPermission);
+    return view('dashboard.groups.permission', compact('dataPermission'));
+}
+
+public function addPermission(Request $request)
+{
+    if (!$request->ajax()) {
+        return redirect()->back();
+    }
+    // dd($request);
+
+    $keys = ["name", "permission_category_id"];
+    // dd($keys);
+    $rules = [
+        "name" => 'required|string',
+        "permission_category_id" => 'required'
+    ];
+    $messages = [
+        'name.required' => 'Permission name is required',
+        'name.string' => 'Permission name must be a string',
+        'permission_category_id.required' => 'permission_category_id ID is required.',
+    ];    
+
+    $validator = Validator::make($request->all(), $rules, $messages);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'error' => true,
+            'message' => $validator->errors()
+        ]);
+    }
+
+    $requestData = RequestHelper::sanitize($request, $keys);
+    // dd($requestData);
+    try {
+        ApiHelper::request("POST", '/permission/create', [
+            "form_params" => $requestData,
+        ]);
+        return response()->json([
+            'error' => false,
+            'message' => [
+                'returned' => '<div class="alert alert-success alert-dismissible fade show" role="alert">Permission added successfully.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+            ],
+        ]);
+    } catch (ClientException $e) {
+        $statusCode = $e->getResponse()->getStatusCode();
+        // dd($e);
+        $msgs = [400 => "There was an error, please try again later"];
+        $msg = $msgs[$statusCode] ?? "Failed to send data.";
+
+        return response()->json([
+            'error' => true,
+            'message' => [
+                'returned' => '<div class="alert alert-warning alert-dismissible fade show" role="alert">' . $msg . '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+            ],
+        ]);
+    }
+}
+
+    //end permission
+
 
 }

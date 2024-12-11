@@ -30,12 +30,16 @@ Route::middleware(['check.useragent.ip'])->group(function () {
             Route::post('/add-divisi', [DashboardController::class, 'addDivisi'])->name('add.divisi');
             Route::get('/find-divisi', [DashboardController::class, 'findDivisi'])->name('find.divisi');
             Route::patch('/update-divisi', [DashboardController::class, 'updateDivisi'])->name('update.divisi');
+            // catergory
             Route::get('/category', [DashboardController::class, 'category'])->name('category');
             Route::get('/list-category', [DashboardController::class, 'listCategory'])->name('list.category');
             Route::post('/add-category', [DashboardController::class, 'addCategory'])->name('add.category');
             Route::get('/find-category', [DashboardController::class, 'findCategory'])->name('find.category');
             Route::get('/update-category', [DashboardController::class, 'updateCategory'])->name('update.category');
             Route::get('/toggle-category', [DashboardController::class, 'toggleActive'])->name('toggle.active');
+            // permission
+            Route::get('/permission', [DashboardController::class, 'permission'])->name('permission');
+            Route::post('/add-permission', [DashboardController::class, 'addPermission'])->name('add.permission');
         });
         Route::prefix("/admin")->group(function () {
             Route::get('/', [AdminController::class, 'admin'])->name('admin');

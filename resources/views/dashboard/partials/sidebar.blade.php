@@ -51,7 +51,7 @@
                                 <a href="{{ route('category') }}" class="nav-link" data-key="t-kelola-admin">Category</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('divisi') }}" class="nav-link" data-key="t-kelola-admin">Permission</a>
+                                <a href="{{ route('permission') }}" class="nav-link" data-key="t-kelola-admin">Permission</a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{ route('divisi') }}" class="nav-link" data-key="t-kelola-admin">Group Permission</a>
