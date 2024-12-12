@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Exception\ClientException;
 use App\Helpers\RequestHelper;
 use App\Helpers\ApiHelper;
+use App\Helpers\PermissionHelper;
 use App\Http\Requests\AddAdminRequest;
 
 class AdminController extends Controller
@@ -13,18 +14,32 @@ class AdminController extends Controller
     public function admin(Request $request)
     {
         $selectedGroup = $request->query('divisi');
-        $dataGroups = ApiHelper::request("GET", "/group")['data'];
+        $dataGroups = null;
 
-        $dataStaff = ApiHelper::request("GET", "/admin/staff")['data'];
-        $dataSpv = ApiHelper::request("GET", "/admin/supervisor")['data'];
-        $dataManager = ApiHelper::request("GET", "/admin/manager")['data'];
+        if (session('role') === 'super_admin') {
+            $dataGroups = ApiHelper::request("GET", "/group")['data'];
+        }
+
+        $endpoints = [
+            'staff' => 'admin_list_staff',
+            'supervisor' => 'admin_list_spv',
+            'manager' => 'admin_list_manager',
+        ];
+
+        $data = [];
+
+        foreach ($endpoints as $key => $permission) {
+            $data[$key] = PermissionHelper::hasPermission('admin_user', $permission) ? ApiHelper::request("GET", "/admin/$key")['data'] : null;
+        }
+
+        [$dataStaff, $dataSpv, $dataManager] = array_values($data);
 
         if ($selectedGroup) {
             $dataStaff = collect($dataStaff)->filter(fn($item) => $item['group']['name'] === $selectedGroup)->toArray();
             $dataSpv = collect($dataSpv)->filter(fn($item) => $item['group']['name'] === $selectedGroup)->toArray();
             $dataManager = collect($dataManager)->filter(fn($item) => $item['group']['name'] === $selectedGroup)->toArray();
         }
-        // dd($dataManager);
+        // dd(session()->get('permission'));
         return view('dashboard.admin.admin', compact('dataStaff', 'dataSpv', 'dataManager', 'dataGroups', 'selectedGroup'));
     }
 

@@ -27,7 +27,8 @@
         },
         "files": [
             "app/Helpers/ApiHelpers.php",
-             "app/Helpers/CommonHelpers.php",
+            "app/Helpers/CommonHelpers.php",
+            "app/Helpers/PermissionsHelpers.php",
             "app/Helpers/RequestHelpers.php"
         ]
     },

@@ -84,7 +84,7 @@ class AuthController extends Controller
             session()->put('username', $data['data']['user']['username']);
             session()->put('role', $data['data']['user']['role']);
             session()->put('access', $data['data']['access']);
-
+            session()->put('permission', $data['data']['user']['permissions']);
             return response()->json([
                 'error' => false,
                 'message' => [

@@ -34,6 +34,7 @@
                         </h4>
 
                         <div class="d-flex align-items-center gap-3">
+                            @if(session()->has('role') && session()->get('role') == 'super_admin')
                             <div class="dropdown">
                                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownFilter" data-bs-toggle="dropdown" aria-expanded="false">
                                     @if ($selectedGroup)
@@ -42,6 +43,7 @@
                                     Semua Divisi
                                     @endif
                                 </button>
+
                                 <ul class="dropdown-menu" aria-labelledby="dropdownFilter">
                                     <li><a class="dropdown-item" href="{{ route('admin') }}">Semua Divisi</a></li>
                                     @foreach ($dataGroups as $group)
@@ -53,11 +55,13 @@
                                     @endforeach
                                 </ul>
                             </div>
-
+                            @endif
                             <!-- Button to add admin -->
-                            <a href="{{ route('tambah-admin') }}" class="btn btn-primary fw-bold">
-                                <i class="ri-user-2-line"></i> Tambah Admin
-                            </a>
+                            @if(\App\Helpers\PermissionHelper::hasPermission('admin_user', 'create_user'))
+                                <a href="{{ route('tambah-admin') }}" class="btn btn-primary fw-bold">
+                                    <i class="ri-user-2-line"></i> Tambah Admin
+                                </a>
+                            @endif
                         </div>
                     </div>
 
@@ -100,27 +104,28 @@
                         }
 
                         $tables = [
-                            ['title' => 'Data Staff', 'data' => $dataStaff, 'id' => 'table-staff'],
-                            ['title' => 'Data SPV', 'data' => $dataSpv, 'id' => 'table-spv'],
-                            ['title' => 'Data Manager', 'data' => $dataManager, 'id' => 'table-manager'],
+                            ['title' => 'Staff', 'data' => $dataStaff, 'id' => 'table-staff'],
+                            ['title' => 'SPV', 'data' => $dataSpv, 'id' => 'table-spv'],
+                            ['title' => 'Manager', 'data' => $dataManager, 'id' => 'table-manager'],
                         ];
                     @endphp
-
                     @foreach ($tables as $table)
-                        @php
-                            $tableData = generateTableData($table['data'], $table['id']);
-                        @endphp
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="minimal-border w-100">
-                                    <x-card :title="$table['title']">
-                                        <x-table :id="$tableData['id']" :headers="$tableData['headers']" :rows="$tableData['rows']" />
-                                    </x-card>
+                        @if(\App\Helpers\PermissionHelper::hasPermission('admin_user', 'admin_list_' . strtolower(str_replace(' ', '_', $table['title']))))
+                            @php
+                                $tableData = generateTableData($table['data'], $table['id']);
+                            @endphp
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="minimal-border w-100">
+                                        <x-card :title="'Data' . ' ' . $table['title']">
+                                            <x-table :id="$tableData['id']" :headers="$tableData['headers']" :rows="$tableData['rows']" />
+                                        </x-card>
+                                    </div>
                                 </div>
+                                <!-- end col -->
                             </div>
-                            <!-- end col -->
-                        </div>
-                        <!-- end row -->
+                            <!-- end row -->
+                        @endif
                     @endforeach
                 </div>
                 <!-- container-fluid -->
