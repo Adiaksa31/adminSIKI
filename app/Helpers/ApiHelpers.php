@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Session;
+use GuzzleHttp\Exception\ClientException;
 
 class ApiHelper {
     protected static function getBaseUrl() :string {
@@ -41,17 +42,23 @@ class ApiHelper {
         $response = $client->request($method, $fullpath, $data);
         return $response;
     }
-    public static function request($method, $path, $body=null, $additionalHeaders=[]) :array {
-        $response = self::rawRequest($method, $path, $body, $additionalHeaders);
-        // parse json
-        $body = $response->getBody()->getContents();
-        $statusCode = $response->getStatusCode();
-        $data = json_decode($body, true);
-        // dd($data);
-        if ($statusCode == 401) {
-            return redirect()->route('login');
+    public static function request($method, $path, $body=null, $additionalHeaders=[], $handleForbid=true) :array {
+        try{
+            $response = self::rawRequest($method, $path, $body, $additionalHeaders);
+            $body = $response->getBody()->getContents();
+            $data = json_decode($body, true);
+            return $data;
+        } catch(ClientException $e) {
+            if ($e->getResponse()->getStatusCode() === 401) {
+                return redirect()->route('login');
+            } elseif($e->getResponse()->getStatusCode() === 403){
+                UpdateSession::handle();
+                if ($handleForbid) {
+                    abort(403);
+                 }
+            }
+            throw $e;
         }
-        return $data;
     }
 
     public static function setSession(array $data, bool $remember=false) {

@@ -13,25 +13,32 @@ class AdminController extends Controller
 {
     public function admin(Request $request)
     {
-        $selectedGroup = $request->query('divisi');
-        $dataGroups = null;
-
-        if (session('role') === 'super_admin') {
-            $dataGroups = ApiHelper::request("GET", "/group")['data'];
-        }
-
-        $endpoints = [
-            'staff' => 'admin_list_staff',
-            'supervisor' => 'admin_list_spv',
-            'manager' => 'admin_list_manager',
+        // dd(session()->all());
+        $data = [
+            'staff' => [],
+            'supervisor' => [],
+            'manager' => [],
         ];
+        try {
+            $selectedGroup = $request->query('divisi');
+            $dataGroups = null;
+            if (hasRole('admin')) {
+                $dataGroups = ApiHelper::request("GET", "/group")['data'];
+            }
+            $endpoints = [
+                'staff' => 'list_staff',
+                'supervisor' => 'list_spv',
+                'manager' => 'list_manager',
+            ];
+            foreach ($endpoints as $key => $permission) {
+                $data[$key] = PermissionHelper::hasRoleAndPermission($permission)
+                    ? ApiHelper::request("GET", "/admin/$key", null, [], false)['data']
+                    : null;
+            }
+        } catch (ClientException $e) {
 
-        $data = [];
-
-        foreach ($endpoints as $key => $permission) {
-            $data[$key] = PermissionHelper::hasPermission('admin_user', $permission) ? ApiHelper::request("GET", "/admin/$key")['data'] : null;
         }
-
+        // dd($data);
         [$dataStaff, $dataSpv, $dataManager] = array_values($data);
 
         if ($selectedGroup) {
@@ -39,7 +46,6 @@ class AdminController extends Controller
             $dataSpv = collect($dataSpv)->filter(fn($item) => $item['group']['name'] === $selectedGroup)->toArray();
             $dataManager = collect($dataManager)->filter(fn($item) => $item['group']['name'] === $selectedGroup)->toArray();
         }
-        // dd(session()->get('permission'));
         return view('dashboard.admin.admin', compact('dataStaff', 'dataSpv', 'dataManager', 'dataGroups', 'selectedGroup'));
     }
 
@@ -171,7 +177,7 @@ class AdminController extends Controller
         $categories = ApiHelper::request("GET", "/permission_category")['data'];
         $dataPermis = ApiHelper::request("GET", "/admin/{$paramIds}/get_default_permission");
         $data = ApiHelper::request("GET", "/admin/{$paramIds}/get_permission")['data'];
-        // dd($data);
+        // dd($categories);
         return view('dashboard.admin.admin-permission', compact('userData', 'dataPermis', 'data', 'categories'));
     }
 

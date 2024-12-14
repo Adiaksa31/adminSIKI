@@ -34,7 +34,7 @@
                         </h4>
 
                         <div class="d-flex align-items-center gap-3">
-                            @if(session()->has('role') && session()->get('role') == 'super_admin')
+                            @if(hasRole('admin'))
                             <div class="dropdown">
                                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownFilter" data-bs-toggle="dropdown" aria-expanded="false">
                                     @if ($selectedGroup)
@@ -57,7 +57,7 @@
                             </div>
                             @endif
                             <!-- Button to add admin -->
-                            @if(\App\Helpers\PermissionHelper::hasPermission('admin_user', 'create_user'))
+                            @if(hasRoleAndPermission('create_user'))
                                 <a href="{{ route('tambah-admin') }}" class="btn btn-primary fw-bold">
                                     <i class="ri-user-2-line"></i> Tambah Admin
                                 </a>
@@ -110,7 +110,7 @@
                         ];
                     @endphp
                     @foreach ($tables as $table)
-                        @if(\App\Helpers\PermissionHelper::hasPermission('admin_user', 'admin_list_' . strtolower(str_replace(' ', '_', $table['title']))))
+                        @if(hasRoleAndPermission('list_' . strtolower(str_replace(' ', '_', $table['title']))))
                             @php
                                 $tableData = generateTableData($table['data'], $table['id']);
                             @endphp

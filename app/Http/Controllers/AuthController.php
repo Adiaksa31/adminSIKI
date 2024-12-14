@@ -81,6 +81,7 @@ class AuthController extends Controller
             ]);
             // dd($data);
             session()->put('seed', $data['data']['seed']);
+            session()->put('ids', $data['data']['user']['id']);
             session()->put('username', $data['data']['user']['username']);
             session()->put('role', $data['data']['user']['role']);
             session()->put('access', $data['data']['access']);
