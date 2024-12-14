@@ -66,51 +66,54 @@
                     </div>
 
                     @php
-                        function generateTableData($data, $id) {
-                            $isManagerOrAdmin = in_array(session('role'), ['manager', 'super_admin']);
-                            $headers = ['#', 'Nama Lengkap', 'Email', 'Nomor Telp', 'Jabatan', 'Divisi'];
-                            if ($isManagerOrAdmin) {
-                                $headers[] = 'Permission';
-                            }
-                            $headers[] = 'Aksi';
+                    function generateTableData($data, $id) {
+                        $isManagerOrAdmin = in_array(session('role'), ['manager', 'super_admin']);
+                        $headers = ['#', 'Nama Lengkap', 'Email', 'Nomor Telp', 'Jabatan', 'Divisi'];
+                        if ($isManagerOrAdmin) {
+                            $headers[] = 'Permission';
+                        }
+                        $headers[] = 'Aksi';
 
-                            $rows = collect($data)->map(function ($item, $index) use ($isManagerOrAdmin) {
-                                $permissionColumn = '';
-                                if ($isManagerOrAdmin) {
-                                    $permissionColumn = '<a href="' . route('admin-permission', ['paramId' => $item['username']]) . '" class="btn btn-primary fw-bold">
+                        $rows = collect($data)->map(function ($item, $index) use ($isManagerOrAdmin) {
+                            $permissionColumn = '';
+                            if ($isManagerOrAdmin) {
+                                $permissionColumn = '<a href="' . route('admin-permission', ['paramId' => $item['username']]) . '" class="btn btn-primary fw-bold">
                                                             <i class="ri-settings-4-line"></i> Permission
                                                         </a>';
-                                }
-                                $row = [
-                                    $index + 1,
-                                    $item['fullname'] ?? '-',
-                                    $item['email'] ?? '-',
-                                    $item['phone'] ?? '-',
-                                    $item['role'] ?? '-',
-                                    $item['group']['name'] ?? '-',
-                                ];
-                                if ($isManagerOrAdmin) {
-                                    $row[] = $permissionColumn;
-                                }
-                                $row[] = '<div class="text-center">
-                                            <a href="' . route('edit-admin', ['paramId' => $item['username']]) . '" class="link-success fs-15" title="detail"><i class="ri-pencil-line"></i></a>
-                                        </div>';
-                                        // <a href="javascript:void(0);" class="link-danger fs-15"><i class="ri-delete-bin-line"></i></a>
+                            }
+                            $row = [
+                                $index + 1,
+                                $item['fullname'] ?? '-',
+                                $item['email'] ?? '-',
+                                $item['phone'] ?? '-',
+                                $item['role'] ?? '-',
+                                $item['group']['name'] ?? '-',
+                            ];
+                            if ($isManagerOrAdmin) {
+                                $row[] = $permissionColumn;
+                            }
+                            $row[] = '<div class="text-center">
+                                        <a href="' . route('edit-admin', ['paramId' => $item['username']]) . '" class="link-success fs-15" title="detail"><i class="ri-pencil-line"></i></a>
+                                    </div>';
 
-                                return $row;
-                            })->toArray();
+                            return $row;
+                        })->toArray();
 
-                            return compact('headers', 'rows', 'id');
-                        }
+                        return compact('headers', 'rows', 'id');
+                    }
 
-                        $tables = [
-                            ['title' => 'Staff', 'data' => $dataStaff, 'id' => 'table-staff'],
-                            ['title' => 'SPV', 'data' => $dataSpv, 'id' => 'table-spv'],
-                            ['title' => 'Manager', 'data' => $dataManager, 'id' => 'table-manager'],
-                        ];
+                    $tables = [
+                        ['title' => 'Staff', 'data' => $dataStaff, 'id' => 'table-staff'],
+                        ['title' => 'SPV', 'data' => $dataSpv, 'id' => 'table-spv'],
+                        ['title' => 'Manager', 'data' => $dataManager, 'id' => 'table-manager'],
+                    ];
                     @endphp
+
                     @foreach ($tables as $table)
-                        @if(hasRoleAndPermission('list_' . strtolower(str_replace(' ', '_', $table['title']))))
+                        @php
+                            $permissionKey = 'list_' . strtolower(str_replace(' ', '_', $table['title']));
+                        @endphp
+                        @if(hasRoleAndPermission($permissionKey) && !empty($table['data']))
                             @php
                                 $tableData = generateTableData($table['data'], $table['id']);
                             @endphp

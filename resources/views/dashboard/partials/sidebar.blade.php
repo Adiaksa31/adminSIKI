@@ -38,7 +38,7 @@
                         <i class="ri-dashboard-line"></i> <span data-key="t-dashboards">Dashboard</span>
                     </a>
                 </li>
-                @if(Session::get('role') === 'super_admin')
+                @if(hasRole('admin'))
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ Request::is('groups*') || Request::is('divisi') || Request::is('category') ? 'active fw-bold' : '' }}" href="#sidebarAdmins" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarAdmins">
                             <i class="ri-user-2-line"></i> <span data-key="t-admins">Groups</span>
