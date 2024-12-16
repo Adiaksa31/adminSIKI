@@ -27,8 +27,6 @@
 
     <div id="scrollbar">
         <div class="container-fluid">
-
-
             <div id="two-column-menu">
             </div>
             <ul class="navbar-nav" id="navbar-nav">
@@ -79,7 +77,7 @@
                 </li> --}}
 
                 <li class="menu-title"><span data-key="t-menu">Menu</span></li>
-                @if(hasRole('admin') || hasCategory('admin_user'))
+                @if(hasRole('admin') || hasCategory('admin'))
                 <li class="nav-item">
                     <a class="nav-link menu-link {{ Request::is('admin*') || Request::is('tambah-admin') ? 'active fw-bold' : '' }}" href="{{ route('admin') }}">
                         <i class="ri-user-2-line"></i> <span data-key="t-admins">Admin</span>

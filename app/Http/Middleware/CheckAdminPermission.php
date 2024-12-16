@@ -17,7 +17,7 @@ class CheckAdminPermission
     {
         PermissionHelper::init();
 
-        if (!PermissionHelper::hasRole('admin') && !PermissionHelper::hasCategory('admin_user')) {
+        if (!PermissionHelper::hasRole('admin') && !PermissionHelper::hasCategory('admin')) {
             abort(404);
         }
         return $next($request);

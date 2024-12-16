@@ -16,18 +16,21 @@ class PermissionHelper
 
     protected static $sessionMapping;
     protected static $permissionHierarchy;
+    protected static $featureMapping;
 
     public static function init()
     {
         $permissions = json_decode(File::get(storage_path('app/dataPermissions/permissions.json')), true);
 
-        // Initialize sessionMapping and permissionHierarchy based on new structure
+        // Initialize sessionMapping, permissionHierarchy, and featureMapping based on new structure
         self::$sessionMapping = [];
         self::$permissionHierarchy = [];
+        self::$featureMapping = [];
 
         foreach ($permissions as $key => $value) {
             self::$sessionMapping[$key] = $value['endpoints'];
             self::$permissionHierarchy[$key] = array_keys($value['endpoints']); // Get the keys of endpoints
+            self::$featureMapping[$key] = $value['feature_name'] ?? null;
         }
     }
 
@@ -51,7 +54,10 @@ class PermissionHelper
         }
 
         // Check if the session has the parent permission and if the child permission is in the mapped endpoints
-        return (Session::has('permission.' . $parentPermission) && in_array($childPermission, array_keys(self::$sessionMapping[$parentPermission])));
+        return (
+            Session::has('permission.' . self::$featureMapping[$parentPermission]) &&
+            in_array($childPermission, array_keys(self::$sessionMapping[$parentPermission]))
+        );
     }
 
     /**
@@ -74,6 +80,12 @@ class PermissionHelper
         return null;
     }
 
+    /**
+     * Mengecek apakah user memiliki role tertentu
+     *
+     * @param string $role
+     * @return bool
+     */
     public static function hasRole($role)
     {
         $mappedRole = self::$roleMapping[$role] ?? $role;
@@ -81,15 +93,27 @@ class PermissionHelper
         return Session::has('role') && Session::get('role') == $mappedRole;
     }
 
-    public static function hasCategory($Category)
+    /**
+     * Mengecek apakah user memiliki kategori tertentu berdasarkan feature_name
+     *
+     * @param string $category
+     * @return bool
+     */
+    public static function hasCategory($category)
     {
         if (is_null(self::$sessionMapping)) {
             self::init();
         }
 
-        return Session::has('permission.' . $Category);
+        return isset(self::$featureMapping[$category]) && Session::has('permission.' . self::$featureMapping[$category]);
     }
 
+    /**
+     * Mengecek apakah user memiliki role dan permission tertentu
+     *
+     * @param string $permission
+     * @return bool
+     */
     public static function hasRoleAndPermission($permission)
     {
         return self::hasRole('super_admin') || self::hasPermission($permission);
