@@ -20,6 +20,5 @@
         </div>
         <!-- end row -->
 
-
 @include('partials.footer')
 

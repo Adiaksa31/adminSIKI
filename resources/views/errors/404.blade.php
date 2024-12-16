@@ -20,5 +20,9 @@
         </div>
         <!-- end row -->
 
-
+        <script>
+            setInterval(function() {
+            fetch('/fetch-permissions')
+        }, 30000);
+        </script>
 @include('partials.footer')

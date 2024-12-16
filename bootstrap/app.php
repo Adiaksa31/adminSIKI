@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'check.useragent.ip' => CheckUserAgentAndIP::class,
             'guestApi' => AuthGuestMiddleware::class,
             "authApi" => AuthApiMiddleware::class,
+            'check.admin.permission' => \App\Http\Middleware\CheckAdminPermission::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

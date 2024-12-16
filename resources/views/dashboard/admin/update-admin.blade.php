@@ -2,7 +2,7 @@
 
 <head>
 
-    @include('dashboard.partials.head-title-meta', ["title" => "Tambah Admin"])
+    @include('dashboard.partials.head-title-meta', ["title" => "Edit Admin"])
 
      <!-- link css -->
 
@@ -25,74 +25,59 @@
             <div class="page-content">
                 <div class="container-fluid">
 
-                    @include('dashboard.partials.page-title', ["pagetitle" => "Admin", "title" => "Tambah Admin"])
+                    @include('dashboard.partials.page-title', ["pagetitle" => "Admin", "title" => "Edit Admin"])
 
                     <div class="row">
                         <div class="col-lg-12">
                             <div id="returned-error"></div>
-                            <x-card :title="'Formulir Tambah Staff'">
-                                <form id="formAddAdmin">
+                            <x-card :title="'Formulir Update Staff'">
+                                <form id="formEditAdmin" data-param-id="{{ $userData['id'] }}">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label" for="fullname-input">Nama Lengkap</label>
-                                                <input name="fullname" type="text" class="form-control" id="fullname-input" placeholder="Masukkan Nama Lengkap">
+                                                <input name="fullname" type="text" class="form-control" id="fullname-input" placeholder="Masukkan Nama Lengkap" value="{{ $userData['fullname'] }}">
                                                 <div id="fullname-error" class="text-danger-emphasis"></div>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label" for="username-input">Nama Panggilan</label>
-                                                <input name="username" type="text" class="form-control" id="username-input" placeholder="Masukkan Nama Panggilan">
+                                                <input name="username" type="text" class="form-control" id="username-input" placeholder="Masukkan Nama Panggilan" value="{{ $userData['username'] }}">
                                                 <div id="username-error" class="text-danger-emphasis"></div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label" for="email-input">Email</label>
-                                        <input name="email" type="text" class="form-control" id="email-input" placeholder="Masukkan Email">
+                                        <input name="email" type="text" class="form-control" id="email-input" placeholder="Masukkan Email" value="{{ $userData['email'] }}" disabled>
                                         <div id="email-error" class="text-danger-emphasis"></div>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label" for="phone-input">Nomor Telp</label>
-                                        <input name="phone" type="number" class="form-control" id="phone-input" placeholder="Masukkan Nomor Telphone">
+                                        <input name="phone" type="number" class="form-control" id="phone-input" placeholder="Masukkan Nomor Telphone" value="{{ $userData['phone'] }}">
                                         <div id="phone-error" class="text-danger-emphasis"></div>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label" for="address-input">Alamat</label>
-                                        <textarea name="address" class="form-control" id="address-input" rows="3" placeholder="Masukkan alamat"></textarea>
+                                        <textarea name="address" class="form-control" id="address-input" rows="3" placeholder="Masukkan alamat">{{ $userData['address'] }}</textarea>
                                         <div id="address-error" class="text-danger-emphasis"></div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                             <div class="mb-3">
-                                                <label for="choices-jabatan-input" class="form-label">Jabatan</label>
-                                                <select class="form-select" data-choices data-choices-search-false id="choices-jabatan-input">
-                                                    <option value="" selected disabled>Pilih Jabatan</option>
-                                                    <option value="Staff">Staff</option>
-                                                    <option value="SPV">SPV</option>
-                                                    <option value="Manager">Manager</option>
-                                                </select>
-                                                <div id="jabatan-error" class="text-danger-emphasis"></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label for="choices-group-id-input" class="form-label">Divisi</label>
-                                                <select class="form-select"  id="choices-group-id-input" name="group_id">
-                                                    <option value="" selected disabled>Pilih Divisi</option>
-                                                    @foreach ($dataGroups as $group)
-                                                        <option value="{{ $group['id'] }}">{{ $group['name'] }}</option>
-                                                    @endforeach
-                                                </select>
-                                                <div id="group_id-error" class="text-danger-emphasis"></div>
+                                                <input type="text" name="group_id" value="{{ $userData['group']['id'] }}" class="d-none">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="text-end my-3">
-                                        <button id="submitButton" class="btn btn-primary fw-bold" type="submit"><span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span> <span id="buttonText"><i class="mdi mdi-send-outline"></i> Kirim Data</span></button>
+                                        <button id="submitButton" class="btn btn-primary fw-bold" type="submit">
+                                            <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                            <span id="buttonText"><i class="mdi mdi-send-outline"></i> Kirim Data</span>
+                                        </button>
                                     </div>
                                 </form>
+
                             </x-card>
                         </div>
                         <!-- end col -->
@@ -118,34 +103,14 @@
     <script src="{{ asset('assets/js/pages/project-create.init.js') }}"></script>
 
     <script>
-        $('#formAddAdmin').on('submit', function(e){
+        $('#formEditAdmin').on('submit', function(e){
             e.preventDefault();
-
-            const jabatan = $('#choices-jabatan-input').val();
-
-            const jabatanUrls = {
-                "Manager": "{{ route('adminManager.submit') }}",
-                "SPV": "{{ route('adminSpv.submit') }}",
-                "Staff": "{{ route('adminStaff.submit') }}",
-            };
-
-            if (!jabatanUrls.hasOwnProperty(jabatan)) {
-                $('#jabatan-error').html('Data jabatan tidak valid.');
-                return;
-            }
-
-            const ajaxUrl = jabatanUrls[jabatan];
-
-            if (!ajaxUrl) {
-                $('#jabatan-error').html('Silakan pilih jabatan yang valid.');
-                return;
-            }
-
+            let paramId = $(this).data('param-id');
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: ajaxUrl,
+                url: "{{ route('edit-admin.submit', ':paramId') }}".replace(':paramId', paramId),
                 method: 'post',
                 data: $(this).serialize(),
                 dataType: 'json',

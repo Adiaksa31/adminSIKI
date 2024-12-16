@@ -1,3 +1,8 @@
+<script>
+    setInterval(function() {
+    fetch('/fetch-permissions')
+}, 30000);
+</script>
 <!-- JAVASCRIPT -->
 <script type="text/javascript" src="{{ asset('assets/libs/jquery/jquery-2.2.4.min.js') }}"></script>
 <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

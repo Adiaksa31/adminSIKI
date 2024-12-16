@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Session;
+use App\Helpers\ApiHelper;
 
 
 if (!function_exists('isLogin')) {
@@ -8,7 +9,7 @@ if (!function_exists('isLogin')) {
     {
         $accessToken = Session::get('access');
         $sessionSeed = Session::get('seed');
-        // dd($accessToken, $sessionSeed);
+
         return !empty($accessToken) && !empty($sessionSeed);
     }
 }
