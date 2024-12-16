@@ -26,6 +26,17 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="minimal-border w-100">
+                                @php
+                                $headersGroup = ['#', 'Endpoint', 'Aksi'];
+                                $rowsGroup = collect($dataPermission)->map(function ($dataPermiss, $index) {
+                                return [
+                                $index + 1,
+                                $dataPermiss[0][0]['name'] ?? '-',
+                                '<div class="hstack gap-3 flex-wrap"><a href="' . $dataPermiss['id'] . '" class="link-success fs-15" title="edit"> <i class="ri-pencil-line"></i> </a>
+                                </div>',
+                                ];
+                                })->toArray();
+                                @endphp
                                 <div id="returned-error"></div>
                                 <x-card :title="'Permission'">
                                     <form id="add-permission" class="position-relative row g-2 mb-3">
@@ -34,9 +45,11 @@
                                             <!-- Select -->
                                             <div class="d-flex flex-column flex-fill">
                                                 <select name="permission_category_id" id="permission_category_id" class="form-select" aria-label="Pilih Permission">
-                                                    <option value="" selected disabled>Pilih Permission</option>
-                                                    @foreach ($dataPermission as $data)
-                                                    <option value="{{ $data['id'] }}">{{ $data['name'] }}</option>
+                                                    @foreach ($dataPermission as $index => $data)
+                                                    <option value="{{ $data['id'] }}"
+                                                        @if ($index===0) selected @endif>
+                                                        {{ $data['name'] }}
+                                                    </option>
                                                     @endforeach
                                                 </select>
                                                 <div id="permission_category_id-error" class="text-danger-emphasis" style="min-height: 1em;"></div>
@@ -57,6 +70,7 @@
                                             </div>
                                         </div>
                                     </form>
+                                    <x-table id="table-group" :headers="$headersGroup" :rows="$rowsGroup" />
                                 </x-card>
                             </div>
                         </div>
@@ -72,10 +86,87 @@
         </div>
         <!-- end main content-->
     </div>
-    <!-- END layout-wrapper -->
     @include("dashboard.partials.scripts-js")
 
+
+    <div class="modal fade" id="permissionsModal" tabindex="-1" aria-labelledby="permissionsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="permissionsModalLabel">Full Permissions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="fullPermissionsContent">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- link js -->
+    <script>
+        const permissions = @json($dataPermission);
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectElement = document.getElementById('permission_category_id');
+            const tableBody = document.querySelector('#table-group tbody');
+            const errorElement = document.getElementById('returned-error');
+            const permissionsModal = new bootstrap.Modal(document.getElementById('permissionsModal'));
+
+            function renderTable(data) {
+                tableBody.innerHTML = '';
+                if (data.length === 0) {
+                    errorElement.textContent = 'Data tidak ditemukan.';
+                    return;
+                }
+                errorElement.textContent = '';
+                data.forEach((item, index) => {
+                    let permissionsList = item.permissions && item.permissions.length > 0 ?
+                        item.permissions.map(permission => permission.name).join(', ') :
+                        '-';
+                    let displayPermissions = permissionsList;
+                    let moreLink = '';
+                    if (permissionsList.length > 100) {
+                        displayPermissions = permissionsList.substring(0, 90) + '...';
+                        moreLink = `<a href="#" class="text-primary" data-id="${index}">selengkapnya...</a>`;
+                    }
+                    const row = `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${displayPermissions} ${moreLink}</td>
+                    <td>
+                        <div class="hstack gap-3 flex-wrap">
+                            <a href="${item.id}" class="link-success fs-15" title="edit">
+                                <i class="ri-pencil-line"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>`;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+                document.querySelectorAll('a[data-id]').forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const index = this.getAttribute('data-id');
+                        const fullPermissions = data[index].permissions.map((permission, i) => `${i + 1}. ${permission.name}`).join('<br>');
+                        document.getElementById('fullPermissionsContent').innerHTML = fullPermissions;
+                        const permissionsModal = new bootstrap.Modal(document.getElementById('permissionsModal'));
+                        permissionsModal.show();
+                    });
+                });
+            }
+            selectElement.addEventListener('change', function() {
+                const selectedId = this.value;
+                const filteredData = permissions.filter(item => item.id == selectedId);
+                renderTable(filteredData);
+            });
+            renderTable(permissions);
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             $('#add-permission').on('submit', function(e) {

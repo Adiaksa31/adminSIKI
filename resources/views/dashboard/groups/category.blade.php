@@ -20,14 +20,14 @@
                 <div class="container-fluid">
                     @include('dashboard.partials.page-title', ["pagetitle" => "Groups", "title" => "Category"])
                     <div class="d-flex align-items-center justify-content-between mb-3">
-                        <h4 class="mb-0">Data Category</h4>
+                        <h4 class="mb-0">Data Fitur</h4>
                     </div>
                     @if (Session::get('role') === 'super_admin')
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="minimal-border w-100">
                                     @php
-                                        $headersGroup = ['#', 'Nama Category', 'Description', 'Permissions', 'Aksi'];
+                                        $headersGroup = ['#', 'Nama Fitur', 'Description', 'List End Point', 'Aksi'];
 
                                         $rowsGroup = collect($categories ?? [])->map(function ($data, $index) {
                                             // Menyusun daftar permissions menjadi string
@@ -53,17 +53,17 @@
                                             ];
                                         })->toArray();
                                     @endphp
-                                    <x-card :title="'Data category'">
+                                    <x-card :title="'Data Fitur'">
                                         <form id="add-category" class="position-relative row g-2 mb-3">
                                             <div class="col-12 col-md-10">
                                                 <input name="name" type="text" class="form-control" id="name"
-                                                    placeholder="Masukkan Category">
+                                                    placeholder="Masukkan Fitur">
                                                 <div id="name-error" class="text-danger-emphasis"></div>
                                                 <button type="button" class="btn-close position-absolute" aria-label="Close"
                                                     id="closeButton"
                                                     style="top: 8px; right: 10px; z-index: 1050; display: none;"></button>
                                             </div>
-                                            <div class="col-12 col-md-2">
+                                            <div class="col-12 col-md-2 d-grid">
                                                 <button id="submitButton" class="btn btn-primary w-100 fw-bold"
                                                     type="submit">
                                                     <span id="spinner" class="spinner-border spinner-border-sm d-none"
@@ -125,7 +125,7 @@
         });
 
 
-            $('.link-success').on('click', function (e) {
+        $(document).on('click', '.link-success', function (e) {
                 e.preventDefault();
                 var categoryId = $(this).attr('href');
 
@@ -151,6 +151,7 @@
 
             $('#add-category').on('submit', function (e) {
     e.preventDefault();
+
     var categoryId = $(this).data('category-id');
 
     var formData = $(this).serialize();

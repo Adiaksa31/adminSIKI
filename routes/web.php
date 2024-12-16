@@ -36,11 +36,12 @@ Route::middleware(['check.useragent.ip'])->group(function () {
             Route::get('/list-category', [DashboardController::class, 'listCategory'])->name('list.category');
             Route::post('/add-category', [DashboardController::class, 'addCategory'])->name('add.category');
             Route::get('/find-category', [DashboardController::class, 'findCategory'])->name('find.category');
-            Route::get('/update-category', [DashboardController::class, 'updateCategory'])->name('update.category');
+            Route::patch('/update-category', [DashboardController::class, 'updateCategory'])->name('update.category');
             Route::get('/toggle-category', [DashboardController::class, 'toggleActive'])->name('toggle.active');
             // permission
             Route::get('/permission', [DashboardController::class, 'permission'])->name('permission');
             Route::post('/add-permission', [DashboardController::class, 'addPermission'])->name('add.permission');
+            Route::get('/filter-permission', [DashboardController::class, 'filter'])->name('filter.permission');
         });
         Route::group(['middleware' => 'check.admin.permission'], function () {
             Route::prefix("/admin")->group(function () {
