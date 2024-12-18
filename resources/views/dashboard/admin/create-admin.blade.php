@@ -69,9 +69,17 @@
                                                 <label for="choices-jabatan-input" class="form-label">Jabatan</label>
                                                 <select class="form-select" data-choices data-choices-search-false id="choices-jabatan-input">
                                                     <option value="" selected disabled>Pilih Jabatan</option>
-                                                    <option value="Staff">Staff</option>
-                                                    <option value="SPV">SPV</option>
-                                                    <option value="Manager">Manager</option>
+                                                    @if(hasRoleAndPermission('create_staff'))
+                                                        <option value="Staff">Staff</option>
+                                                    @endif
+
+                                                    @if(hasRoleAndPermission('create_spv'))
+                                                        <option value="SPV">SPV</option>
+                                                    @endif
+
+                                                    @if(hasRoleAndPermission('create_manager'))
+                                                        <option value="Manager">Manager</option>
+                                                    @endif
                                                 </select>
                                                 <div id="jabatan-error" class="text-danger-emphasis"></div>
                                             </div>
@@ -79,12 +87,21 @@
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label for="choices-group-id-input" class="form-label">Divisi</label>
-                                                <select class="form-select"  id="choices-group-id-input" name="group_id">
-                                                    <option value="" selected disabled>Pilih Divisi</option>
-                                                    @foreach ($dataGroups as $group)
-                                                        <option value="{{ $group['id'] }}">{{ $group['name'] }}</option>
-                                                    @endforeach
-                                                </select>
+                                                @if(hasRole('admin'))
+                                                    <select class="form-select" data-choices data-choices-search-false id="choices-group-id-input" name="group_id">
+                                                        <option value="" selected disabled>Pilih Divisi</option>
+                                                        @foreach ($dataGroups as $group)
+                                                            <option value="{{ $group['id'] }}">{{ $group['name'] }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                @else
+                                                    <select class="form-select" data-choices data-choices-search-false id="choices-group-id-input" name="group_id">
+                                                        <option value="" selected disabled>Pilih Divisi</option>
+                                                        <option value="{{ $dataGroups['id'] }}">
+                                                            {{ $dataGroups['name'] }}
+                                                        </option>
+                                                    </select>
+                                                @endif
                                                 <div id="group_id-error" class="text-danger-emphasis"></div>
                                             </div>
                                         </div>

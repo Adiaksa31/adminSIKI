@@ -22,7 +22,7 @@
 
         <script>
             setInterval(function() {
-            fetch('/fetch-permissions')
-        }, 30000);
+                fetch('/fetch-permissions')
+            }, 60000);
         </script>
 @include('partials.footer')

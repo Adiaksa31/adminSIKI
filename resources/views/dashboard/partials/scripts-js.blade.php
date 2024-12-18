@@ -1,7 +1,7 @@
 <script>
     setInterval(function() {
-    fetch('/fetch-permissions')
-}, 30000);
+        fetch('/fetch-permissions')
+    }, 60000);
 </script>
 <!-- JAVASCRIPT -->
 <script type="text/javascript" src="{{ asset('assets/libs/jquery/jquery-2.2.4.min.js') }}"></script>

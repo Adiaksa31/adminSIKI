@@ -56,8 +56,7 @@
                                 </ul>
                             </div>
                             @endif
-                            <!-- Button to add admin -->
-                            @if(hasRoleAndPermission('create_user'))
+                            @if(hasRoleAndPermission('create_staff') || hasRoleAndPermission('create_spv') || hasRoleAndPermission('create_manager'))
                                 <a href="{{ route('tambah-admin') }}" class="btn btn-primary fw-bold">
                                     <i class="ri-user-2-line"></i> Tambah Admin
                                 </a>

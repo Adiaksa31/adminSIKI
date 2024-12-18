@@ -45,18 +45,18 @@
                                 <div class="col-md-6 col-lg-12">
                                     <x-card :title="'Permission'">
 
-                                            @if(!empty($data) && count($data) > 0)
-                                                @foreach($data as $group => $permissions)
-                                                    <span class="fw-bold px-2">{{ $group }}</span>
-                                                        <ul>
-                                                            @foreach($permissions as $perm)
-                                                                <li>{{ $perm }}</li>
-                                                            @endforeach
-                                                        </ul>
-                                                @endforeach
-                                            @else
-                                                <span class="text-center">Tidak memiliki permission</span>
-                                            @endif
+                                        @if(!empty($userData['permissions']) && count($userData['permissions']) > 0)
+                                            @foreach($userData['permissions'] as $group => $permissions)
+                                                <span class="fw-bold px-2">{{ $group }}</span>
+                                                <ul>
+                                                    @foreach($permissions as $perm)
+                                                        <li>{{ $perm }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            @endforeach
+                                        @else
+                                            <span class="text-center">Tidak memiliki permission</span>
+                                        @endif
 
                                     </x-card>
                                 </div>
@@ -76,8 +76,8 @@
                                 <div class="col-lg-12">
                                     <div id="returned-error"></div>
                                     <div class="minimal-border w-100">
-                                         <!-- Accordion Grid -->
-                                         <div class="row g-3">
+                                        <!-- Accordion Grid -->
+                                        <div class="row g-3">
                                             @foreach ($categories as $category)
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="accordion" id="accordion-{{ $category['id'] }}">
@@ -89,7 +89,6 @@
                                                             </h2>
                                                             <div id="collapse-{{ $category['id'] }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ $category['id'] }}">
                                                                 <div class="accordion-body">
-                                                                    {{-- <p>{{ $category['description'] }}</p> --}}
                                                                     <!-- Permissions List -->
                                                                     <ul class="list-group">
                                                                         @foreach ($category['permissions'] as $permission)
@@ -100,8 +99,7 @@
                                                                                         value="{{ $permission['id'] }}"
                                                                                         data-id="{{ $permission['id'] }}"
                                                                                         data-category="{{ $category['id'] }}"
-                                                                                        data-checked="{{ in_array($permission['name'], $userData['permissions'][''] ?? []) ? 'true' : 'false' }}"
-                                                                                        {{ in_array($permission['name'], $userData['permissions'][''] ?? []) ? 'checked' : '' }}>
+                                                                                        {{ checkPermission($permission['name'], $userData['permissions']) ? 'checked' : '' }}>
                                                                             </li>
                                                                         @endforeach
                                                                     </ul>
@@ -116,6 +114,19 @@
                                 </div>
                                 <!-- end col -->
                             </div>
+
+                            <!-- Add this function in your Blade template or Controller to check the permission dynamically -->
+                            @php
+                                function checkPermission($permissionName, $permissions) {
+                                    foreach ($permissions as $category => $categoryPermissions) {
+                                        if (in_array($permissionName, $categoryPermissions)) {
+                                            return true;
+                                        }
+                                    }
+                                    return false;
+                                }
+                            @endphp
+
                         </div>
                     </div>
                 </div>

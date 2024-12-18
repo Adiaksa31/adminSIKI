@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'guestApi' => AuthGuestMiddleware::class,
             "authApi" => AuthApiMiddleware::class,
             'check.admin.permission' => \App\Http\Middleware\CheckAdminPermission::class,
+            'check.super_admin.permission' => \App\Http\Middleware\CheckSuperAdminPermission::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

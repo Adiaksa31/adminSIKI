@@ -8,6 +8,7 @@ use App\Helpers\RequestHelper;
 use App\Helpers\ApiHelper;
 use App\Helpers\PermissionHelper;
 use App\Http\Requests\AddAdminRequest;
+use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
 {
@@ -49,12 +50,18 @@ class AdminController extends Controller
         return view('dashboard.admin.admin', compact('dataStaff', 'dataSpv', 'dataManager', 'dataGroups', 'selectedGroup'));
     }
 
+
     public function addAdmin(Request $request)
     {
-        $dataGroups = ApiHelper::request("GET", "/group")['data'];
+        if (hasRole('admin')) {
+            $dataGroups = ApiHelper::request("GET", "/group")['data'];
+        } else {
+            $dataGroups = Session::get('group');
+        }
         $allowedValues = array_column($dataGroups, 'value');
 
         $request->merge(['allowed_values' => $allowedValues]);
+
         // dd($dataGroups);
         return view('dashboard.admin.create-admin', compact('dataGroups'));
     }
@@ -116,6 +123,7 @@ class AdminController extends Controller
         return $this->addUser('/admin/manager/create', $request);
     }
 
+
     public function editAdmin($paramId)
     {
         $userData = ApiHelper::request("GET", "/admin/{$paramId}")['data'];
@@ -176,9 +184,8 @@ class AdminController extends Controller
         $paramIds = $userData['id'];
         $categories = ApiHelper::request("GET", "/permission_category")['data'];
         $dataPermis = ApiHelper::request("GET", "/admin/{$paramIds}/get_default_permission");
-        $data = ApiHelper::request("GET", "/admin/{$paramIds}/get_permission")['data'];
-        // dd($categories);
-        return view('dashboard.admin.admin-permission', compact('userData', 'dataPermis', 'data', 'categories'));
+        // dd($userData);
+        return view('dashboard.admin.admin-permission', compact('userData', 'dataPermis', 'categories'));
     }
 
     public function grant(Request $request, $paramId)
